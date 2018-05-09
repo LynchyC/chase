@@ -1,0 +1,16 @@
+{
+  "name": "chase",
+  "version": "0.0.1",
+  "description": "Real time logging reading built on Electron",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "webpack --mode development"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Charlie Lynch",
+    "email": "lynchcoding@gmail.com",
+    "url": "https://github.com/LynchyC"
+  },
+  "license": "MIT"
+}
