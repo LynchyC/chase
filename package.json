@@ -12,5 +12,9 @@
     "email": "lynchcoding@gmail.com",
     "url": "https://github.com/LynchyC"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "tslint": "^5.10.0",
+    "typescript": "^2.8.3"
+  }
 }
