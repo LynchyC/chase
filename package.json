@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --mode development",
     "electron": "npm run build && electron ./dist/main.*.js",
-    "test": "mocha -r ts-node/register test/**/*.spec.ts"
+    "test": "mocha -r ts-node/register test/**/*.ts"
   },
   "keywords": [],
   "author": {
