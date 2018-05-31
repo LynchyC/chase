@@ -1,11 +1,11 @@
 {
   "name": "chase",
   "version": "0.0.1",
-  "description": "Real time logging reading built on Electron",
+  "description": "Real time logging display built on Electron",
   "main": "dist/main.*.js",
   "scripts": {
-    "build": "webpack --mode development",
-    "dev": "npm-run-all build electron",
+    "build:electron": "webpack --mode development --config webpack.config.electron.js",
+    "dev": "npm-run-all build:* electron",
     "electron": "electron ./dist/main.js",
     "mocha": "mocha -r ts-node/register test/**/*.ts",
     "test": "npm-run-all build mocha"
@@ -35,6 +35,7 @@
     "tslint-loader": "^3.6.0",
     "typescript": "^2.8.3",
     "webpack": "^4.8.1",
-    "webpack-cli": "^2.1.3"
+    "webpack-cli": "^2.1.3",
+    "webpack-merge": "^4.1.2"
   }
 }

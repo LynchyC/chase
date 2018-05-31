@@ -1,15 +1,15 @@
 const path = require("path");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const commonConfig = {
+module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].js'
     },
+
     module: {
         rules: [{
-                test: /\.ts$/,
+                test: /\.tsx$/,
                 enforce: 'pre',
                 loader: 'tslint-loader',
                 options: {
@@ -18,32 +18,25 @@ const commonConfig = {
                 }
             },
             {
-                test: /\.ts?$/,
+                test: /\.tsx?$/,
                 use: ['ts-loader']
             }
         ]
     },
+
     resolve: {
-        extensions: ['.ts', '.js']
+        extensions: ['.ts', '.tsx', '.js'],
+        modules: [
+            path.join(__dirname, 'app'),
+            'node_modules',
+        ]
     },
+
     node: {
         __dirname: false
     },
+
     plugins: [
-        new CleanWebpackPlugin('dist'),
-        new HtmlWebpackPlugin({
-            title: 'Chase',
-            template: './src/index.html',
-            inject: false
-        })
+        new CleanWebpackPlugin('dist')
     ]
 };
-
-module.exports = [
-    Object.assign({
-        target: 'electron-main',
-        entry: {
-            main: './src/main.ts'
-        }
-    }, commonConfig)
-]
