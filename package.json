@@ -8,7 +8,7 @@
     "dev": "npm-run-all build:* electron",
     "electron": "electron ./dist/main.js",
     "mocha": "mocha -r ts-node/register test/**/*.ts",
-    "test": "npm-run-all build mocha"
+    "test": "npm-run-all build:* mocha"
   },
   "keywords": [],
   "author": {

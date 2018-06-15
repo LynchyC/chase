@@ -1,10 +1,10 @@
-import { app, BrowserWindow, ipcMain } from "electron";
-import * as path from "path";
-import * as url from "url";
+import { app, BrowserWindow, dialog, ipcMain, Menu } from "electron";
+import { join } from "path";
+import { format } from "url";
 
 let mainWindow: Electron.BrowserWindow;
 
-function createWindow() {
+function createWindow(): void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     webPreferences: {
@@ -13,8 +13,8 @@ function createWindow() {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, "index.html"),
+  mainWindow.loadURL(format({
+    pathname: join(__dirname, "index.html"),
     protocol: "file",
     slashes: true,
   }));
@@ -24,7 +24,29 @@ function createWindow() {
   });
 }
 
-app.on("ready", createWindow);
+app.on("ready", () => {
+  createWindow();
+
+  const template: Electron.MenuItemConstructorOptions[] = [{
+    label: "File",
+    submenu: [{
+      label: "Open File",
+      click: () => {
+        dialog.showOpenDialog(mainWindow, {
+          title: "Open File",
+          properties: ["openFile"],
+        });
+      },
+      accelerator: "CmdOrCtrl+O",
+    }, {
+      role: "close",
+      accelerator: "CmdOrCtrl+Q",
+    }],
+  }];
+
+  const menu: Electron.Menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
