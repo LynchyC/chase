@@ -5,6 +5,7 @@
   "main": "dist/main.*.js",
   "scripts": {
     "build:electron": "webpack --mode development --config webpack.config.electron.js",
+    "build:react": "webpack --mode development --config webpack.config.renderer.js",
     "dev": "npm-run-all build:* electron",
     "electron": "electron ./dist/main.js",
     "mocha": "mocha -r ts-node/register test/**/*.ts",
@@ -18,16 +19,22 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.0.0-beta.51",
+    "@babel/preset-env": "^7.0.0-beta.51",
+    "@babel/preset-react": "^7.0.0-beta.51",
     "@types/chai": "^4.1.3",
     "@types/chai-as-promised": "^7.1.0",
     "@types/mocha": "^5.2.0",
+    "@types/react": "^16.3.17",
+    "@types/react-dom": "^16.0.6",
+    "babel-loader": "^8.0.0-beta.3",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "clean-webpack-plugin": "^0.1.19",
     "electron": "^2.0.2",
     "html-webpack-plugin": "^3.2.0",
     "mocha": "^5.2.0",
-    "npm-run-all": "^4.1.3",
+    "npm-run-all": "^4.1.3",    
     "spectron": "^3.8.0",
     "ts-loader": "^4.3.0",
     "ts-node": "^6.0.5",
@@ -37,5 +44,9 @@
     "webpack": "^4.8.1",
     "webpack-cli": "^2.1.3",
     "webpack-merge": "^4.1.2"
+  },
+  "dependencies": {
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1"
   }
 }

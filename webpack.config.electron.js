@@ -1,17 +1,15 @@
 const merge = require("webpack-merge");
 const baseConfig = require("./webpack.config.base");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = merge(baseConfig, {
 
     target: 'electron-main',
-    entry: './src/main.ts',
+    entry: {
+        main: './src/main.ts'
+    },
 
     plugins: [
-        new HtmlWebpackPlugin({
-            title: 'Chase',
-            template: './src/index.html',
-            inject: false
-        })
+        new CleanWebpackPlugin('dist/main*')
     ]
 });

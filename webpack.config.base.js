@@ -1,5 +1,4 @@
 const path = require("path");
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
     output: {
@@ -19,7 +18,10 @@ module.exports = {
             },
             {
                 test: /\.tsx?$/,
-                use: ['ts-loader']
+                use: [
+                    'babel-loader',
+                    'ts-loader'
+                ]
             }
         ]
     },
@@ -34,9 +36,5 @@ module.exports = {
 
     node: {
         __dirname: false
-    },
-
-    plugins: [
-        new CleanWebpackPlugin('dist')
-    ]
+    }
 };
