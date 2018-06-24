@@ -6,7 +6,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = merge(baseConfig, {
     
     entry: {
-        app: './src/App.tsx'
+        app: './src/index.tsx'
     },
 
     plugins: [
