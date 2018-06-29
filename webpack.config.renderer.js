@@ -2,6 +2,7 @@ const baseConfig = require("./webpack.config.base");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const merge = require("webpack-merge");
+const path = require("path");
 
 module.exports = merge(baseConfig, {
     
@@ -28,6 +29,10 @@ module.exports = merge(baseConfig, {
         new HtmlWebpackPlugin({
             template: './src/index.html',
             filename: 'index.html'
-        }),
-    ]
+        })
+    ],
+
+    devServer: {
+        contentBase: path.resolve(__dirname, "dist")
+    }
 });
