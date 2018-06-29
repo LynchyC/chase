@@ -13,11 +13,15 @@ function createWindow(): void {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadURL(format({
-    pathname: join(__dirname, "index.html"),
-    protocol: "file",
-    slashes: true,
-  }));
+  if (process.env.NODE_ENV === "development") {
+    mainWindow.loadURL("http://localhost:8080");
+  } else {
+    mainWindow.loadURL(format({
+      pathname: join(__dirname, "index.html"),
+      protocol: "file",
+      slashes: true,
+    }));
+  }
 
   mainWindow.on("closed", () => {
     mainWindow = null;
