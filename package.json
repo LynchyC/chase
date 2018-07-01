@@ -49,6 +49,7 @@
     "@types/react": "^16.3.17",
     "@types/react-dom": "^16.0.6",
     "@types/uniqid": "^4.1.2",
+    "@types/react-router-dom": "^4.2.7",
     "babel-loader": "^8.0.0-beta.3",
     "clean-webpack-plugin": "^0.1.19",
     "cross-env": "^5.2.0",
@@ -77,6 +78,7 @@
     "chokidar": "^2.0.4",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "uniqid": "^5.0.3"
+    "uniqid": "^5.0.3",
+    "react-router-dom": "^4.3.1"
   }
 }
