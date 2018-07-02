@@ -1,8 +1,11 @@
+import { FSWatcher } from "chokidar";
 import { app, BrowserWindow, dialog, ipcMain, Menu } from "electron";
 import { join } from "path";
 import { format } from "url";
+import Watcher from "./watcher";
 
 let mainWindow: Electron.BrowserWindow;
+let watcher: Watcher = null;
 
 function createWindow(): void {
   // Create the browser window.
@@ -31,7 +34,11 @@ function createWindow(): void {
 app.on("ready", () => {
   createWindow();
 
-  const template: Electron.MenuItemConstructorOptions[] = [{
+  watcher = new Watcher(new FSWatcher({
+    ignored: /(^|[\/\\])\../,
+  }), mainWindow);
+
+  let template: Electron.MenuItemConstructorOptions[] = [{
     label: "File",
     submenu: [{
       label: "Open File",
@@ -48,6 +55,25 @@ app.on("ready", () => {
     }],
   }];
 
+  if (process.env.NODE_ENV === "development") {
+    template = [...template, {
+      label: "Developer",
+      submenu: [{
+        label: "Open Dev Tools",
+        click() {
+          mainWindow.webContents.openDevTools();
+        },
+        accelerator: "CmdOrCtrl+Shift+F12",
+      }, {
+        label: "Force Reload",
+        click() {
+          mainWindow.reload();
+        },
+        accelerator: "CmdOrCtrl+Shift+R",
+      }],
+    }];
+  }
+
   const menu: Electron.Menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
 });
@@ -62,4 +88,12 @@ app.on("activate", () => {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+ipcMain.on("files:added", (e: Event, files: string | string[]) => {
+  watcher.add(files);
+});
+
+ipcMain.on("files:unwatch", (e: Event, files: string | string[]) => {
+  watcher.remove(files);
 });
