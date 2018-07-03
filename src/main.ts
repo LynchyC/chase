@@ -3,9 +3,12 @@ import { app, BrowserWindow, dialog, ipcMain, Menu } from "electron";
 import { join } from "path";
 import { format } from "url";
 import Watcher from "./watcher";
+const isDevelopment = process.env.NODE_ENV === "development" ? true : false;
 
 let mainWindow: Electron.BrowserWindow;
-let watcher: Watcher = null;
+const watcher: Watcher = new Watcher(new FSWatcher({
+  ignored: /(^|[\/\\])\../,
+}), mainWindow);
 
 function createWindow(): void {
   // Create the browser window.
@@ -16,7 +19,7 @@ function createWindow(): void {
   });
 
   // and load the index.html of the app.
-  if (process.env.NODE_ENV === "development") {
+  if (isDevelopment) {
     mainWindow.loadURL("http://localhost:8080");
   } else {
     mainWindow.loadURL(format({
@@ -33,10 +36,6 @@ function createWindow(): void {
 
 app.on("ready", () => {
   createWindow();
-
-  watcher = new Watcher(new FSWatcher({
-    ignored: /(^|[\/\\])\../,
-  }), mainWindow);
 
   let template: Electron.MenuItemConstructorOptions[] = [{
     label: "File",
@@ -55,13 +54,17 @@ app.on("ready", () => {
     }],
   }];
 
-  if (process.env.NODE_ENV === "development") {
+  if (isDevelopment) {
     template = [...template, {
       label: "Developer",
       submenu: [{
         label: "Open Dev Tools",
         click() {
-          mainWindow.webContents.openDevTools();
+          if (mainWindow.webContents.isDevToolsOpened()) {
+            mainWindow.webContents.closeDevTools();
+          } else {
+            mainWindow.webContents.openDevTools();
+          }
         },
         accelerator: "CmdOrCtrl+Shift+F12",
       }, {
