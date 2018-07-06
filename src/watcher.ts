@@ -43,11 +43,13 @@ export default class Watcher {
     }
 
     private onAdd(path: string): void {
-        this._files.push({
+        const file: IFile = {
             id: uniqid(),
             path,
             content: "",
-        });
+        };
+        this._files.push(file);
+        this._mainWindow.webContents.send("file:watching", { file });
     }
 
     private async onChange(path: string): Promise<void> {
