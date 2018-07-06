@@ -1,5 +1,10 @@
 import * as React from "react";
-import Dropzone, { DropFileEventHandler } from "react-dropzone";
+import Dropzone from "react-dropzone";
+import { connect } from "react-redux";
+import { AnyAction } from "redux";
+import { ThunkDispatch } from "redux-thunk";
+import * as FileActions from "../actions/fileActions";
+import IStoreState from "../store/IStoreState";
 import Header from "./Header";
 
 interface IDropSettings {
@@ -7,9 +12,19 @@ interface IDropSettings {
     isDragReject: boolean;
 }
 
-export default class FileSelection extends React.Component<any, any> {
-    constructor(props: any) {
+interface IProps {
+    addFile: (path: string) => any;
+}
+
+class FileSelection extends React.Component<IProps, any> {
+    constructor(props: IProps) {
         super(props);
+        this.onDrop = this.onDrop.bind(this);
+    }
+
+    onDrop(files: File[]) {
+        const { path } = files[0];
+        this.props.addFile(path);
     }
 
     renderChildren({ isDragActive, isDragReject}: IDropSettings): JSX.Element {
@@ -30,6 +45,7 @@ export default class FileSelection extends React.Component<any, any> {
                     accept="text/plain"
                     activeClassName="dropzone--active"
                     multiple={false}
+                    onDrop={this.onDrop}
                     className="dropzone"
                 >
                 {this.renderChildren}
@@ -38,3 +54,11 @@ export default class FileSelection extends React.Component<any, any> {
         );
     }
 }
+
+function mapDispatchToProps(dispatch: ThunkDispatch<IStoreState, null, AnyAction>) {
+    return {
+        addFile: (path: string) => dispatch(FileActions.addFile(path)),
+    };
+}
+
+export default connect(null, mapDispatchToProps)(FileSelection);
