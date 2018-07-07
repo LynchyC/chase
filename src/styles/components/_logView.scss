@@ -1,0 +1,22 @@
+.logView {
+    height: 100vh;
+    width: 100%;
+}
+
+.react-tabs {
+    height: 85vh;
+}
+
+.logContent {
+    border: none;
+    border-radius: 5px;
+    color: transparent;
+    resize: none;
+    height: 80vh;
+    width: 100%;
+    text-shadow: 0 0 0 black;
+
+    &:focus {
+        outline: none;
+    }
+}

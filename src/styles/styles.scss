@@ -1,4 +1,6 @@
 @import './base/_settings';
 @import './base/_base';
-@import './components/_header';
 @import './components/_fileSelection';
+@import './components/_header';
+@import './components/_logView';
+@import 'react-tabs.scss';

@@ -1,6 +1,7 @@
 import * as React from "react";
 import Dropzone from "react-dropzone";
 import { connect } from "react-redux";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 import { AnyAction } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import * as FileActions from "../actions/fileActions";
@@ -16,8 +17,8 @@ interface IProps {
     addFile: (path: string) => any;
 }
 
-class FileSelection extends React.Component<IProps, any> {
-    constructor(props: IProps) {
+class FileSelection extends React.Component<IProps & RouteComponentProps<any>, any> {
+    constructor(props: IProps & RouteComponentProps<any>) {
         super(props);
         this.onDrop = this.onDrop.bind(this);
     }
@@ -25,6 +26,7 @@ class FileSelection extends React.Component<IProps, any> {
     onDrop(files: File[]) {
         const { path } = files[0];
         this.props.addFile(path);
+        this.props.history.push("/logs");
     }
 
     renderChildren({ isDragActive, isDragReject}: IDropSettings): JSX.Element {
@@ -61,4 +63,4 @@ function mapDispatchToProps(dispatch: ThunkDispatch<IStoreState, null, AnyAction
     };
 }
 
-export default connect(null, mapDispatchToProps)(FileSelection);
+export default withRouter(connect(null, mapDispatchToProps)(FileSelection));
