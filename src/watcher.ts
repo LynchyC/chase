@@ -49,15 +49,21 @@ export default class Watcher {
             content: "",
         };
         this._files.push(file);
-        this._mainWindow.webContents.send("file:watching", { file });
+        this._mainWindow.webContents.send("file:watching", file);
     }
 
     private async onChange(path: string): Promise<void> {
         try {
             const fileContents = await this.retrieveFileContents(path);
-            const file = this._files.find((f: IFile) => f.path === path);
-            file.content = fileContents;
-            this._mainWindow.webContents.send("logs:loaded", { file });
+            let fileToSend: IFile;
+            this._files = this._files.map((file: IFile) => {
+                if (file.path === path) {
+                    file.content = fileContents;
+                    fileToSend = file;
+                }
+                return file;
+            });
+            this._mainWindow.webContents.send("logs:loaded", fileToSend);
         } catch (error) {
             throw error;
         }
