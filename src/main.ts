@@ -11,6 +11,8 @@ let watcher: Watcher;
 function createWindow(): void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
+    minHeight: 515,
+    minWidth: 465,
     webPreferences: {
       backgroundThrottling: false,
     },
