@@ -1,20 +1,24 @@
 import { ipcRenderer } from "electron";
 import { Action, Dispatch } from "redux";
 import { IFile } from "../store/IStoreState";
-import { ADD_FILE, REMOVE_FILE } from "./types";
+import { ADD_FILE, REMOVE_FILE, UPDATE_FILE } from "./types";
 
 export interface IAddFileAction extends Action<string> {
     file: IFile;
 }
 
+export interface IUpdateFileAction extends Action<string> {
+    file: IFile;
+}
+
 export interface IRemoveFileAction extends Action<string> {
-    fileId: number;
+    id: string;
 }
 
 export const addFile = (path: string) => (dispatch: Dispatch<IAddFileAction>) => {
     ipcRenderer.send("file:added", path);
     ipcRenderer.on("file:watching", (event: Event, fileWithContent: IFile) => {
-      dispatch(addFileSuccess(fileWithContent));
+        dispatch(addFileSuccess(fileWithContent));
     });
 };
 
@@ -22,8 +26,12 @@ export function addFileSuccess(file: IFile): IAddFileAction {
     return { type: ADD_FILE, file };
 }
 
-export function removeFile(fileId: number): IRemoveFileAction {
-    return { type: REMOVE_FILE, fileId };
+export function updateFile(file: IFile): IUpdateFileAction {
+    return { type: UPDATE_FILE, file };
+}
+
+export function removeFile(id: string): IRemoveFileAction {
+    return { type: REMOVE_FILE, id };
 }
 
 

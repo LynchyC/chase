@@ -1,6 +1,6 @@
 export interface IFile {
-    id: number;
-    fileName: string;
+    id: string;
+    path: string;
     content: string;
 }
 
