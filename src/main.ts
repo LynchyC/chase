@@ -99,6 +99,6 @@ ipcMain.on("file:added", (e: Event, file: string) => {
   watcher.add(file);
 });
 
-ipcMain.on("file:unwatch", (e: Event, file: string) => {
-  watcher.remove(file);
+ipcMain.on("file:removed", (e: Event, id: string) => {
+  watcher.remove(id);
 });

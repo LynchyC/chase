@@ -38,8 +38,9 @@ export default class Watcher {
         return this._files;
     }
 
-    remove(paths: string | string[]): void {
-        this._chokidar.unwatch(paths);
+    remove(id: string): void {
+        const { path } = this._files.find((f) => f.id === id);
+        this._chokidar.unwatch(path);
     }
 
     private onAdd(path: string): void {
@@ -63,7 +64,7 @@ export default class Watcher {
                 }
                 return file;
             });
-            this._mainWindow.webContents.send("logs:loaded", fileToSend);
+            this._mainWindow.webContents.send("log:loaded", fileToSend);
         } catch (error) {
             throw error;
         }
@@ -71,7 +72,7 @@ export default class Watcher {
 
     private onRemove(path: string): void {
         this._files = this._files.filter((f: IFile) => f.path !== path);
-        this._mainWindow.webContents.send("files:removed");
+        this._mainWindow.webContents.send("log:unloaded");
     }
 
     private async retrieveFileContents(path: string): Promise<string> {
