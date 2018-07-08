@@ -97,8 +97,8 @@ app.on("activate", () => {
   }
 });
 
-ipcMain.on("file:added", (e: Event, file: string) => {
-  watcher.add(file);
+ipcMain.on("file:added", (e: Event, name: string, path: string) => {
+  watcher.add(name, path);
 });
 
 ipcMain.on("file:removed", (e: Event, id: string) => {

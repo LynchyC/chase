@@ -6,6 +6,7 @@ import { promisify } from "util";
 
 interface IFile {
     id: string;
+    name: string;
     path: string;
     content: string;
 }
@@ -26,8 +27,15 @@ export default class Watcher {
         this._chokidar.on("unlink", (path) => this.onRemove(path));
     }
 
-    add(paths: string | string[]): void {
-        this._chokidar.add(paths);
+    add(name: string, path: string): void {
+        const file: IFile = {
+            id: uniqid(),
+            name,
+            path,
+            content: "",
+        };
+        this._files.push(file);
+        this._chokidar.add(path);
     }
 
     end() {
@@ -44,12 +52,7 @@ export default class Watcher {
     }
 
     private onAdd(path: string): void {
-        const file: IFile = {
-            id: uniqid(),
-            path,
-            content: "",
-        };
-        this._files.push(file);
+        const file = this._files.find((f) => f.path === path);
         this._mainWindow.webContents.send("file:watching", file);
     }
 

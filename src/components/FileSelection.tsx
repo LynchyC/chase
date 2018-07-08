@@ -14,7 +14,7 @@ interface IDropSettings {
 }
 
 interface IProps {
-    addFile: (path: string) => any;
+    addFile: (name: string, path: string) => any;
 }
 
 class FileSelection extends React.Component<IProps & RouteComponentProps<any>, any> {
@@ -24,8 +24,8 @@ class FileSelection extends React.Component<IProps & RouteComponentProps<any>, a
     }
 
     onDrop(files: File[]) {
-        const { path } = files[0];
-        this.props.addFile(path);
+        const { name, path } = files[0];
+        this.props.addFile(name, path);
         this.props.history.push("/logs");
     }
 
@@ -59,7 +59,7 @@ class FileSelection extends React.Component<IProps & RouteComponentProps<any>, a
 
 function mapDispatchToProps(dispatch: ThunkDispatch<IStoreState, null, AnyAction>) {
     return {
-        addFile: (path: string) => dispatch(FileActions.addFile(path)),
+        addFile: (name: string, path: string) => dispatch(FileActions.addFile(name, path)),
     };
 }
 

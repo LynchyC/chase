@@ -15,8 +15,8 @@ export interface IRemoveFileAction extends Action<string> {
     id: string;
 }
 
-export const addFile = (path: string) => (dispatch: Dispatch<IAddFileAction>) => {
-    ipcRenderer.send("file:added", path);
+export const addFile = (name: string, path: string) => (dispatch: Dispatch<IAddFileAction>) => {
+    ipcRenderer.send("file:added", name, path);
     ipcRenderer.on("file:watching", (event: Event, fileWithContent: IFile) => {
         dispatch(addFileSuccess(fileWithContent));
     });

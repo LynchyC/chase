@@ -29,27 +29,29 @@ class LogView extends React.Component<IProps, any> {
         return (
             <div className="logView">
                 <Header />
-                <Tabs defaultIndex={0}>
-                    <TabList>
-                        {
-                            this.props.files.map((file, index) => {
-                                return (
-                                    <Tab key={index}>{file.path}</Tab>
-                                );
-                            })
-                        }
-                    </TabList>
+                {this.props.files.length > 0 &&
+                    <Tabs defaultIndex={0}>
+                        <TabList>
+                            {
+                                this.props.files.map((file, index) => {
+                                    return (
+                                        <Tab key={index}><span title={file.path}>{file.name}</span></Tab>
+                                    );
+                                })
+                            }
+                        </TabList>
 
-                    <TabPanel>
-                        {
-                            this.props.files.map((file, index) => {
-                                return (
-                                    <textarea className="logContent" key={index} value={file.content}></textarea>
-                                );
-                            })
-                        }
-                    </TabPanel>
-                </Tabs>
+                        <TabPanel>
+                            {
+                                this.props.files.map((file, index) => {
+                                    return (
+                                        <textarea className="logContent" key={index} value={file.content}></textarea>
+                                    );
+                                })
+                            }
+                        </TabPanel>
+                    </Tabs>
+                }
             </div>
         );
     }
