@@ -17,21 +17,23 @@ export interface IRemoveFileAction extends Action<string> {
 
 export const addFile = (name: string, path: string) => (dispatch: Dispatch<IAddFileAction>) => {
     ipcRenderer.send("file:added", name, path);
-    ipcRenderer.on("file:watching", (event: Event, fileWithContent: IFile) => {
-        dispatch(addFileSuccess(fileWithContent));
-    });
+};
+
+export const removeFile = (id: string) => (dispatch: Dispatch<IRemoveFileAction>) => {
+    ipcRenderer.send("file:removed", id);
 };
 
 export function addFileSuccess(file: IFile): IAddFileAction {
     return { type: ADD_FILE, file };
 }
 
+export function removeFileSuccess(id: string): IRemoveFileAction {
+    return { type: REMOVE_FILE, id };
+}
+
 export function updateFile(file: IFile): IUpdateFileAction {
     return { type: UPDATE_FILE, file };
 }
 
-export function removeFile(id: string): IRemoveFileAction {
-    return { type: REMOVE_FILE, id };
-}
 
 

@@ -6,6 +6,7 @@ import FileSelection from "./components/FileSelection";
 import LogView from "./components/LogView";
 import configureStore from "./store/configureStore";
 import "./styles/styles.scss";
+import IPCManager from "./utils/ipcManager";
 
 const store = configureStore();
 
@@ -19,5 +20,7 @@ const router = (
         </Router>
     </Provider>
 );
+
+IPCManager.registerListeners(store);
 
 ReactDOM.render(router, document.getElementById("app"));

@@ -6,7 +6,10 @@ export default function fileReducer(state: IStoreState, action: FileTypes): ISto
     switch (action.type) {
         case ADD_FILE:
             return {
-                files: state.files.concat(action.file),
+                files: [
+                    ...state.files,
+                    action.file,
+                ],
             };
         case UPDATE_FILE:
             return {
