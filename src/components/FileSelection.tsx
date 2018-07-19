@@ -5,7 +5,7 @@ import { RouteComponentProps, withRouter } from "react-router-dom";
 import { AnyAction } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import * as FileActions from "../actions/fileActions";
-import IStoreState from "../store/IStoreState";
+import IStoreState, { IFile } from "../store/IStoreState";
 import Header from "./Header";
 
 interface IDropSettings {
@@ -15,6 +15,7 @@ interface IDropSettings {
 
 interface IProps {
     addFile: (name: string, path: string) => any;
+    files: IFile[];
 }
 
 class FileSelection extends React.Component<IProps & RouteComponentProps<any>, any> {
@@ -23,13 +24,18 @@ class FileSelection extends React.Component<IProps & RouteComponentProps<any>, a
         this.onDrop = this.onDrop.bind(this);
     }
 
+    componentDidUpdate() {
+        if (this.props.files.length > 0) {
+            this.props.history.push("/logs");
+        }
+    }
+
     onDrop(files: File[]) {
         const { name, path } = files[0];
         this.props.addFile(name, path);
-        this.props.history.push("/logs");
     }
 
-    renderChildren({ isDragActive, isDragReject}: IDropSettings): JSX.Element {
+    renderChildren({ isDragActive, isDragReject }: IDropSettings): JSX.Element {
         if (isDragActive) {
             return <h1 className="dropzone__header">This file is authorized</h1>;
         } else if (isDragReject) {
@@ -50,11 +56,17 @@ class FileSelection extends React.Component<IProps & RouteComponentProps<any>, a
                     onDrop={this.onDrop}
                     className="dropzone"
                 >
-                {this.renderChildren}
+                    {this.renderChildren}
                 </Dropzone>
             </div>
         );
     }
+}
+
+function mapStateToProps({files}: IStoreState) {
+    return {
+        files,
+    };
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch<IStoreState, null, AnyAction>) {
@@ -63,4 +75,4 @@ function mapDispatchToProps(dispatch: ThunkDispatch<IStoreState, null, AnyAction
     };
 }
 
-export default withRouter(connect(null, mapDispatchToProps)(FileSelection));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(FileSelection));
