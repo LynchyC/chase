@@ -3,4 +3,6 @@
 @import './components/_fileSelection';
 @import './components/_header';
 @import './components/_logView';
-@import 'react-tabs.scss';
+
+// Vendor Libraries
+@import '~react-tabs/style/react-tabs.scss';

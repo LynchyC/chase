@@ -1,6 +1,7 @@
 import { ipcRenderer } from "electron";
 import * as React from "react";
 import { connect } from "react-redux";
+import { RouteComponentProps, withRouter } from "react-router";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { AnyAction } from "redux";
 import { ThunkDispatch } from "redux-thunk";
@@ -14,15 +15,39 @@ interface IProps {
     updateFile: (file: IFile) => any;
 }
 
-class LogView extends React.Component<IProps, any> {
-    constructor(props: IProps) {
+interface IState {
+    tabIndex: number;
+}
+
+class LogView extends React.Component<IProps & RouteComponentProps<any>, IState> {
+    constructor(props: IProps & RouteComponentProps<any>) {
         super(props);
+        this.state = {
+            tabIndex: 0,
+        };
     }
 
     componentDidMount() {
-        ipcRenderer.on("log:loaded", (event: Event, fileWithContent: IFile) => {
-            this.props.updateFile(fileWithContent);
-        });
+        ipcRenderer.on("log:changed", this.handleFileListener);
+    }
+
+    componentDidUpdate() {
+        if (this.props.files.length === 0) {
+            this.props.history.push("/");
+        }
+    }
+
+    componentWillUnmount() {
+        ipcRenderer.removeListener("log:changed", this.handleFileListener);
+    }
+
+    handleFileListener(event: Event, fileWithContent: IFile): void {
+        this.props.updateFile(fileWithContent);
+    }
+
+    handleRemoveTab(event: Event, id: string): void {
+        event.preventDefault();
+        this.props.removeFile(id);
     }
 
     render() {
@@ -30,12 +55,23 @@ class LogView extends React.Component<IProps, any> {
             <div className="logView">
                 <Header />
                 {this.props.files.length > 0 &&
-                    <Tabs defaultIndex={0}>
+                    <Tabs selectedIndex={this.state.tabIndex}
+                        onSelect={(tabIndex: number) => this.setState(() => ({ tabIndex }))}
+                        forceRenderTabPanel>
                         <TabList>
                             {
                                 this.props.files.map((file, index) => {
                                     return (
-                                        <Tab key={index}><span title={file.path}>{file.name}</span></Tab>
+                                        <Tab key={index}>
+                                            <span title={file.path}>
+                                                {file.name}
+                                            </span>
+                                            <button
+                                                className="react-tab__btn"
+                                                onClick={() => this.handleRemoveTab(event, file.id)}>
+                                                Close
+                                            </button>
+                                        </Tab>
                                     );
                                 })
                             }
@@ -45,7 +81,13 @@ class LogView extends React.Component<IProps, any> {
                             {
                                 this.props.files.map((file, index) => {
                                     return (
-                                        <textarea className="logContent" key={index} value={file.content}></textarea>
+                                        <textarea
+                                            className="react-tabs__tab-panel__textarea"
+                                            key={index}
+                                            value={file.content}
+                                            readOnly
+                                        >
+                                        </textarea>
                                     );
                                 })
                             }
@@ -70,5 +112,5 @@ function mapDispatchToProps(dispatch: ThunkDispatch<IStoreState, null, AnyAction
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LogView);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LogView));
 
