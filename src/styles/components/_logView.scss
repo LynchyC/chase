@@ -1,0 +1,26 @@
+.logView {
+    height: 100vh;
+    width: 100%;
+}
+
+.react-tabs {
+    height: 85vh;
+}
+
+.react-tab__btn {
+    vertical-align: bottom;
+    margin-left: 5px;
+}
+
+.react-tabs__tab-panel__textarea {
+    border: none;
+    border-radius: 5px;
+    color: transparent;
+    resize: none;
+    height: 80vh;
+    width: 100%;
+    text-shadow: 0 0 0 black;
+    &:focus {
+        outline: none;
+    }
+}

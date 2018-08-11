@@ -2,14 +2,15 @@ const baseConfig = require("./webpack.config.base");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const merge = require("webpack-merge");
-const path = require("path");
-const webpack = require("webpack");
 
 module.exports = merge(baseConfig, {
-    target: 'electron-renderer',
+
+    target: 'electron-main',
     entry: {
-        app: './src/index.tsx'
+        app: './src/index.tsx',
+        main: './src/main.ts'
     },
+
     module: {
         rules: [{
             test: /\.scss$/,
@@ -18,28 +19,19 @@ module.exports = merge(baseConfig, {
             }, {
                 loader: 'css-loader'
             }, {
-                loader: 'sass-loader',
-                options: {
-                    includePaths: [path.resolve(__dirname, "node_modules", "react-tabs", "style")]
-                }
+                loader: 'sass-loader'
             }]
         }, {
             test: /\.html$/,
             use: 'raw-loader'
         }]
     },
+
     plugins: [
-        new CleanWebpackPlugin('dist/app.js'),
+        new CleanWebpackPlugin('dist/*'),
         new HtmlWebpackPlugin({
             template: './src/index.html',
             filename: 'index.html'
-        }),
-        new webpack.HotModuleReplacementPlugin()
-    ],
-
-    devServer: {
-        contentBase: path.resolve(__dirname, "dist"),
-        historyApiFallback: true,
-        hot: true
-    }
+        })
+    ]
 });

@@ -1,0 +1,35 @@
+.fileSelection {
+    height: 100vh;
+    overflow: hidden;
+    width: 100%;
+}
+
+.dropzone {
+    align-items: center;
+    border: 4px dashed white;
+    border-radius: 5px;
+    display: flex;
+    height: 85vh;
+    justify-content: center;
+
+    @media screen and (min-height: $screen-height-breakpoint) and (min-width: $screen-width-breakpoint) {
+        border: 8px dashed white;
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.dropzone--active {
+    background-color: lighten($color: $dark-blue, $amount: 3%);
+}
+
+.dropzone__header {
+    text-align: center;
+    font-size: 1.5rem;
+
+    @media screen and (min-height: $screen-height-breakpoint) and (min-width: $screen-width-breakpoint) {
+        font-size: 2.5rem;
+    }
+}

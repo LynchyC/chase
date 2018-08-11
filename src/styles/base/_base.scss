@@ -1,3 +1,12 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
 body {
-    background-color: #19283e;
+    background-image: linear-gradient(to bottom, $dark-blue, $light-black);
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0 5%;
 }

@@ -6,17 +6,21 @@ import Watcher from "./watcher";
 const isDevelopment = process.env.NODE_ENV === "development" ? true : false;
 
 let mainWindow: Electron.BrowserWindow;
-const watcher: Watcher = new Watcher(new FSWatcher({
-  ignored: /(^|[\/\\])\../,
-}), mainWindow);
+let watcher: Watcher;
 
 function createWindow(): void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
+    minHeight: 515,
+    minWidth: 465,
     webPreferences: {
       backgroundThrottling: false,
     },
   });
+
+  watcher = new Watcher(new FSWatcher({
+    ignored: /(^|[\/\\])\../,
+  }), mainWindow);
 
   // and load the index.html of the app.
   if (isDevelopment) {
@@ -93,10 +97,10 @@ app.on("activate", () => {
   }
 });
 
-ipcMain.on("files:added", (e: Event, files: string | string[]) => {
-  watcher.add(files);
+ipcMain.on("file:added", (e: Event, name: string, path: string) => {
+  watcher.add(name, path);
 });
 
-ipcMain.on("files:unwatch", (e: Event, files: string | string[]) => {
-  watcher.remove(files);
+ipcMain.on("file:removed", (e: Event, id: string) => {
+  watcher.remove(id);
 });

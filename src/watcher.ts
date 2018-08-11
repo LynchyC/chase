@@ -6,6 +6,7 @@ import { promisify } from "util";
 
 interface IFile {
     id: string;
+    name: string;
     path: string;
     content: string;
 }
@@ -26,8 +27,15 @@ export default class Watcher {
         this._chokidar.on("unlink", (path) => this.onRemove(path));
     }
 
-    add(paths: string | string[]): void {
-        this._chokidar.add(paths);
+    add(name: string, path: string): void {
+        const file: IFile = {
+            id: uniqid(),
+            name,
+            path,
+            content: "",
+        };
+        this._files.push(file);
+        this._chokidar.add(path);
     }
 
     end() {
@@ -38,24 +46,28 @@ export default class Watcher {
         return this._files;
     }
 
-    remove(paths: string | string[]): void {
-        this._chokidar.unwatch(paths);
+    remove(id: string): void {
+        const { path } = this._files.find((f) => f.id === id);
+        this._chokidar.unwatch(path);
     }
 
     private onAdd(path: string): void {
-        this._files.push({
-            id: uniqid(),
-            path,
-            content: "",
-        });
+        const file = this._files.find((f) => f.path === path);
+        this._mainWindow.webContents.send("file:watching", file);
     }
 
     private async onChange(path: string): Promise<void> {
         try {
             const fileContents = await this.retrieveFileContents(path);
-            const file = this._files.find((f: IFile) => f.path === path);
-            file.content = fileContents;
-            this._mainWindow.webContents.send("logs:loaded", { file });
+            let fileToSend: IFile;
+            this._files = this._files.map((file: IFile) => {
+                if (file.path === path) {
+                    file.content = fileContents;
+                    fileToSend = file;
+                }
+                return file;
+            });
+            this._mainWindow.webContents.send("log:loaded", fileToSend);
         } catch (error) {
             throw error;
         }
@@ -63,7 +75,7 @@ export default class Watcher {
 
     private onRemove(path: string): void {
         this._files = this._files.filter((f: IFile) => f.path !== path);
-        this._mainWindow.webContents.send("files:removed");
+        this._mainWindow.webContents.send("log:unloaded");
     }
 
     private async retrieveFileContents(path: string): Promise<string> {
