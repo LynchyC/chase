@@ -1,4 +1,3 @@
-import { FSWatcher } from "chokidar";
 import { app, BrowserWindow, dialog, ipcMain, Menu } from "electron";
 import { join } from "path";
 import { format } from "url";
@@ -18,9 +17,7 @@ function createWindow(): void {
     },
   });
 
-  watcher = new Watcher(new FSWatcher({
-    ignored: /(^|[\/\\])\../,
-  }), mainWindow);
+  watcher = new Watcher(mainWindow);
 
   // and load the index.html of the app.
   if (isDevelopment) {
