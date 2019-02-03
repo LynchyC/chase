@@ -21,7 +21,6 @@ interface IProps {
 class FileSelection extends React.Component<IProps & RouteComponentProps<any>, any> {
     constructor(props: IProps & RouteComponentProps<any>) {
         super(props);
-        this.onDrop = this.onDrop.bind(this);
     }
 
     componentDidUpdate() {
@@ -30,7 +29,7 @@ class FileSelection extends React.Component<IProps & RouteComponentProps<any>, a
         }
     }
 
-    onDrop(files: File[]) {
+    onDrop = (files: File[]) => {
         const { name, path } = files[0];
         this.props.addFile(name, path);
     }
@@ -50,7 +49,7 @@ class FileSelection extends React.Component<IProps & RouteComponentProps<any>, a
             <div className="fileSelection">
                 <Header />
                 <Dropzone
-                    accept="text/plain"
+                    accept="text/*"
                     activeClassName="dropzone--active"
                     multiple={false}
                     onDrop={this.onDrop}

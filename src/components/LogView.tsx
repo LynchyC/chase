@@ -41,11 +41,11 @@ class LogView extends React.Component<IProps & RouteComponentProps<any>, IState>
         ipcRenderer.removeListener("log:changed", this.handleFileListener);
     }
 
-    handleFileListener(event: Event, fileWithContent: IFile): void {
+    handleFileListener = (event: Event, fileWithContent: IFile): void => {
         this.props.updateFile(fileWithContent);
     }
 
-    handleRemoveTab(event: Event, id: string): void {
+    handleRemoveTab = (event: Event, id: string): void => {
         event.preventDefault();
         this.props.removeFile(id);
     }

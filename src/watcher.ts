@@ -5,6 +5,8 @@ import * as watch from "node-watch";
 import * as uniqid from "uniqid";
 import { promisify } from "util";
 
+const promisifyReadFile = promisify(readFile);
+
 interface IFile {
     id: string;
     name: string;
@@ -20,12 +22,10 @@ interface IWatcher {
 export default class Watcher {
     private _watchers: IWatcher[] = []; // holds collection of all watched files
     private _mainWindow: BrowserWindow; // Allows sending of ipc events
-    private _readFile: any; // adds ability to await fs.readFile
     private _files: IFile[] = []; // collection of data the renderer cares about
 
     constructor(mainWindow: BrowserWindow) {
         this._mainWindow = mainWindow;
-        this._readFile = promisify(readFile);
     }
 
     getWatchedFiles(): IFile[] {
@@ -96,15 +96,17 @@ export default class Watcher {
         switch (event) {
             case "update":
                 this.updateFileCollection(filePath);
+                break;
             case "remove":
                 const { id } = this._files.find((f) => f.path === filePath);
                 this.remove(id);
+                break;
             default:
-                throw new Error(`Unknown event '${event}' has occured.`);
+                throw new Error(`Unknown event '${event}' has occurred.`);
         }
     }
 
     private async retrieveFileContents(path: string): Promise<string> {
-        return await this._readFile(path, "utf-8");
+        return await promisifyReadFile(path, "utf-8");
     }
 }
