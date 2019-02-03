@@ -8,20 +8,20 @@
     align-items: center;
     border: 4px dashed white;
     border-radius: 5px;
+    cursor: pointer;
     display: flex;
     height: 85vh;
     justify-content: center;
+    outline: 0;
+    user-select: none;
 
     @media screen and (min-height: $screen-height-breakpoint) and (min-width: $screen-width-breakpoint) {
         border: 8px dashed white;
     }
-
-    &:hover {
-        cursor: pointer;
-    }
 }
 
 .dropzone--active {
+    @extend .dropzone;
     background-color: lighten($color: $dark-blue, $amount: 3%);
 }
 

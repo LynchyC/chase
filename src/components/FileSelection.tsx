@@ -9,6 +9,8 @@ import IStoreState, { IFile } from "../store/IStoreState";
 import Header from "./Header";
 
 interface IDropSettings {
+    getInputProps: () => any;
+    getRootProps: () => any;
     isDragActive: boolean;
     isDragReject: boolean;
 }
@@ -34,14 +36,16 @@ class FileSelection extends React.Component<IProps & RouteComponentProps<any>, a
         this.props.addFile(name, path);
     }
 
-    renderChildren({ isDragActive, isDragReject }: IDropSettings): JSX.Element {
-        if (isDragActive) {
-            return <h1 className="dropzone__header">This file is authorized</h1>;
-        } else if (isDragReject) {
-            return <h1 className="dropzone__header">Sorry, this file is not authorized ...</h1>;
-        } else {
-            return <h1 className="dropzone__header">Drop a file here to get started or click me!</h1>;
-        }
+    renderChildren({ getInputProps, getRootProps, isDragActive, isDragReject }: IDropSettings): JSX.Element {
+        return (
+            <div {...getRootProps()} className={isDragActive ? "dropzone--active" : "dropzone"}>
+                <input {...getInputProps()} />
+                <h1 className="dropzone__header">
+                    {!isDragActive && !isDragReject && "Drop a file here to get started or click me!"}
+                    {isDragActive && !isDragReject && "This file is authorized"}
+                    {isDragActive && isDragReject && "Sorry, this file is not authorized ..."}
+                </h1>
+        </div>);
     }
 
     render() {
@@ -50,10 +54,8 @@ class FileSelection extends React.Component<IProps & RouteComponentProps<any>, a
                 <Header />
                 <Dropzone
                     accept="text/*"
-                    activeClassName="dropzone--active"
                     multiple={false}
                     onDrop={this.onDrop}
-                    className="dropzone"
                 >
                     {this.renderChildren}
                 </Dropzone>
