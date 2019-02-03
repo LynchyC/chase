@@ -1,8 +1,9 @@
 import { BrowserWindow } from "electron";
 import { FSWatcher, readFile } from "fs";
 // @ts-ignore
-import * as watch from "node-watch";
-import * as uniqid from "uniqid";
+import watch from "node-watch";
+// @ts-ignore
+import uniqid from "uniqid";
 import { promisify } from "util";
 
 const promisifyReadFile = promisify(readFile);

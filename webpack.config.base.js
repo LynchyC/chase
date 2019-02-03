@@ -15,14 +15,13 @@ module.exports = {
                 options: {
                     typeCheck: true,
                     emitErrors: true
-                }
+                },
+                exclude: /node_modules/
             },
             {
                 test: /\.tsx?$/,
-                use: [
-                    'babel-loader',
-                    'ts-loader'
-                ]
+                loader: 'babel-loader',
+                exclude: /node_modules/
             }
         ]
     },
