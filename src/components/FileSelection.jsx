@@ -1,29 +1,11 @@
 import * as React from "react";
 import Dropzone from "react-dropzone";
 import { connect } from "react-redux";
-import { RouteComponentProps, withRouter } from "react-router-dom";
-import { AnyAction } from "redux";
-import { ThunkDispatch } from "redux-thunk";
+import { withRouter } from "react-router-dom";
 import * as FileActions from "../actions/fileActions";
-import IStoreState, { IFile } from "../store/IStoreState";
 import Header from "./Header";
 
-interface IDropSettings {
-    getInputProps: () => any;
-    getRootProps: () => any;
-    isDragActive: boolean;
-    isDragReject: boolean;
-}
-
-interface IProps {
-    addFile: (name: string, path: string) => any;
-    files: IFile[];
-}
-
-class FileSelection extends React.Component<IProps & RouteComponentProps<any>, any> {
-    constructor(props: IProps & RouteComponentProps<any>) {
-        super(props);
-    }
+class FileSelection extends React.Component {
 
     componentDidUpdate() {
         if (this.props.files.length > 0) {
@@ -31,12 +13,12 @@ class FileSelection extends React.Component<IProps & RouteComponentProps<any>, a
         }
     }
 
-    onDrop = (files: File[]) => {
+    onDrop = (files) => {
         const { name, path } = files[0];
         this.props.addFile(name, path);
-    }
+    };
 
-    renderChildren({ getInputProps, getRootProps, isDragActive, isDragReject }: IDropSettings): JSX.Element {
+    renderChildren({ getInputProps, getRootProps, isDragActive, isDragReject }) {
         return (
             <div {...getRootProps()} className={isDragActive ? "dropzone--active" : "dropzone"}>
                 <input {...getInputProps()} />
@@ -64,15 +46,15 @@ class FileSelection extends React.Component<IProps & RouteComponentProps<any>, a
     }
 }
 
-function mapStateToProps({files}: IStoreState) {
+function mapStateToProps({files}) {
     return {
         files,
     };
 }
 
-function mapDispatchToProps(dispatch: ThunkDispatch<IStoreState, null, AnyAction>) {
+function mapDispatchToProps(dispatch) {
     return {
-        addFile: (name: string, path: string) => dispatch(FileActions.addFile(name, path)),
+        addFile: (name, path) => dispatch(FileActions.addFile(name, path)),
     };
 }
 

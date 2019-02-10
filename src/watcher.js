@@ -1,39 +1,23 @@
-import { BrowserWindow } from "electron";
-import { FSWatcher, readFile } from "fs";
-// @ts-ignore
+import { readFile } from "fs";
 import watch from "node-watch";
-// @ts-ignore
 import uniqid from "uniqid";
 import { promisify } from "util";
 
 const promisifyReadFile = promisify(readFile);
 
-interface IFile {
-    id: string;
-    name: string;
-    path: string;
-    content: string;
-}
-
-interface IWatcher {
-    id: string;
-    watcher: FSWatcher;
-}
-
 export default class Watcher {
-    private _watchers: IWatcher[] = []; // holds collection of all watched files
-    private _mainWindow: BrowserWindow; // Allows sending of ipc events
-    private _files: IFile[] = []; // collection of data the renderer cares about
 
-    constructor(mainWindow: BrowserWindow) {
+    constructor(mainWindow) {
         this._mainWindow = mainWindow;
+        this._watchers = [];
+        this._files = []
     }
 
-    getWatchedFiles(): IFile[] {
+    getWatchedFiles() {
         return this._files;
     }
 
-    add(name: string, path: string): void {
+    add(name, path) {
         const id = uniqid();
         this._watchers.push({
             id,
@@ -41,7 +25,7 @@ export default class Watcher {
         this.addFileToCollection(id, path, name);
     }
 
-    remove(id: string): void {
+    remove(id) {
         this._watchers = this._watchers.filter((f) => {
             if (f.id === id) {
                 f.watcher.close();
@@ -61,8 +45,8 @@ export default class Watcher {
         this._files = [];
     }
 
-    private async addFileToCollection(id: string, path: string, name: string): Promise<void> {
-        const file: IFile = {
+    async addFileToCollection(id, path, name) {
+        const file = {
             id,
             name,
             path,
@@ -72,9 +56,9 @@ export default class Watcher {
         this._mainWindow.webContents.send("file:watching", file);
     }
 
-    private async updateFileCollection(path: string): Promise<void> {
+    async updateFileCollection(path) {
         try {
-            let file: IFile;
+            let file;
             const fileContent = await this.retrieveFileContents(path);
             this._files = this._files.map((f) => {
                 if (f.path === path) {
@@ -89,11 +73,11 @@ export default class Watcher {
         }
     }
 
-    private removeFileFromCollection(id: string): void {
-        this._files = this._files.filter((f: IFile) => f.id !== id);
+    removeFileFromCollection(id) {
+        this._files = this._files.filter((f) => f.id !== id);
     }
 
-    private eventHandler(event: string, filePath: string): void {
+    eventHandler(event, filePath) {
         switch (event) {
             case "update":
                 this.updateFileCollection(filePath);
@@ -107,7 +91,7 @@ export default class Watcher {
         }
     }
 
-    private async retrieveFileContents(path: string): Promise<string> {
+    async retrieveFileContents(path) {
         return await promisifyReadFile(path, "utf-8");
     }
 }

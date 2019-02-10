@@ -9,17 +9,7 @@ module.exports = {
 
     module: {
         rules: [{
-                test: /\.tsx$/,
-                enforce: 'pre',
-                loader: 'tslint-loader',
-                options: {
-                    typeCheck: true,
-                    emitErrors: true
-                },
-                exclude: /node_modules/
-            },
-            {
-                test: /\.tsx?$/,
+                test: /\.jsx?$/,
                 loader: 'babel-loader',
                 exclude: /node_modules/
             }
@@ -27,7 +17,7 @@ module.exports = {
     },
 
     resolve: {
-        extensions: ['.ts', '.tsx', '.js'],
+        extensions: ['.jsx', '.js'],
         modules: [
             path.join(__dirname, 'app'),
             'node_modules',

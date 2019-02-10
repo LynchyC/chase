@@ -4,10 +4,10 @@ import { format } from "url";
 import Watcher from "./watcher";
 const isDevelopment = process.env.NODE_ENV === "development" ? true : false;
 
-let mainWindow: Electron.BrowserWindow;
-let watcher: Watcher;
+let mainWindow;
+let watcher;
 
-function createWindow(): void {
+function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     minHeight: 515,
@@ -38,7 +38,7 @@ function createWindow(): void {
 app.on("ready", () => {
   createWindow();
 
-  let template: Electron.MenuItemConstructorOptions[] = [{
+  let template = [{
     label: "File",
     submenu: [{
       label: "Open File",
@@ -78,7 +78,7 @@ app.on("ready", () => {
     }];
   }
 
-  const menu: Electron.Menu = Menu.buildFromTemplate(template);
+  const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
 });
 
@@ -94,10 +94,10 @@ app.on("activate", () => {
   }
 });
 
-ipcMain.on("file:added", (e: Event, name: string, path: string) => {
+ipcMain.on("file:added", (e, name, path) => {
   watcher.add(name, path);
 });
 
-ipcMain.on("file:removed", (e: Event, id: string) => {
+ipcMain.on("file:removed", (e, id) => {
   watcher.remove(id);
 });
