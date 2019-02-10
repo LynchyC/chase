@@ -7,8 +7,8 @@ module.exports = merge(baseConfig, {
 
     target: 'electron-main',
     entry: {
-        app: './src/index.tsx',
-        main: './src/main.ts'
+        app: './src/index.jsx',
+        main: './src/main.js'
     },
 
     module: {

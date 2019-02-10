@@ -6,7 +6,7 @@ module.exports = merge(baseConfig, {
 
     target: 'electron-main',
     entry: {
-        main: './src/main.ts'
+        main: './src/main.js'
     },
 
     plugins: [

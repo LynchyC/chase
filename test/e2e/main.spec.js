@@ -1,26 +1,27 @@
 import { join } from "path";
-import { AppConstructorOptions, Application } from "spectron";
+import { Application } from "spectron";
 
-const electronPath: string = join(__dirname, "..", "..", "node_modules", ".bin", "electron");
+const electronPath = join(__dirname, "..", "..", "node_modules", ".bin", "electron");
 
 describe("Application Launch", () => {
 
+    let app;
     beforeAll(async () => {
-        this.app = new Application({
+        app = new Application({
             args: [join(__dirname, "..", "..", "dist", "main.js")],
             path: electronPath,
         });
-        return this.app.start();
+        return app.start();
     });
 
     afterAll(() => {
-        if (this.app && this.app.isRunning()) {
-          return this.app.stop();
+        if (app && app.isRunning()) {
+          return app.stop();
         }
     });
 
     test("should open main window", async () => {
-        const { client } = this.app;
+        const { client } = app;
 
         await client.waitUntilWindowLoaded();
         const count = await client.getWindowCount();
@@ -28,7 +29,7 @@ describe("Application Launch", () => {
     });
 
     test("should show title", async () => {
-        const { client } = this.app;
+        const { client } = app;
         const title = await client.getTitle();
         return expect(title).toBe("Chase");
     });
