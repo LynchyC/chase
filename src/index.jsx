@@ -1,7 +1,8 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React, { Fragment } from "react";
+import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import GlobalStyle from "./style";
 import FileSelection from "./components/FileSelection";
 import LogView from "./components/LogView";
 import configureStore from "./store/configureStore";
@@ -12,12 +13,15 @@ const store = configureStore();
 
 const router = (
     <Provider store={store}>
-        <Router>
-            <Switch>
-                <Route exact path="/" component={FileSelection} />
-                <Route path="/logs" component={LogView} />
-            </Switch>
-        </Router>
+        <Fragment>
+            <GlobalStyle />
+            <Router>
+                <Switch>
+                    <Route exact path="/" component={FileSelection} />
+                    <Route path="/logs" component={LogView} />
+                </Switch>
+            </Router>
+        </Fragment>
     </Provider>
 );
 
