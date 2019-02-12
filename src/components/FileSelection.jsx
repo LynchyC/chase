@@ -40,7 +40,13 @@ const DropzoneHeader = styled.h1`
     }
 `;
 
-class FileSelection extends React.Component {
+@withRouter
+@connect(
+    ({ files }) => ({ files }),
+    (dispatch) => ({
+        addFile: (name, path) => dispatch(addFile(name, path))
+    }))
+export default class FileSelection extends React.Component {
 
     componentDidUpdate() {
         if (this.props.files.length > 0) {
@@ -81,17 +87,3 @@ class FileSelection extends React.Component {
         );
     }
 }
-
-function mapStateToProps({files}) {
-    return {
-        files,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        addFile: (name, path) => dispatch(addFile(name, path)),
-    };
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(FileSelection));
