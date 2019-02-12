@@ -12,16 +12,11 @@ module.exports = merge(baseConfig, {
     },
     module: {
         rules: [{
-            test: /\.scss$/,
+            test: /\.css$/,
             use: [{
                 loader: 'style-loader'
             }, {
                 loader: 'css-loader'
-            }, {
-                loader: 'sass-loader',
-                options: {
-                    includePaths: [path.resolve(__dirname, "node_modules", "react-tabs", "style")]
-                }
             }]
         }, {
             test: /\.html$/,
@@ -36,7 +31,6 @@ module.exports = merge(baseConfig, {
         }),
         new webpack.HotModuleReplacementPlugin()
     ],
-
     devServer: {
         contentBase: path.resolve(__dirname, "dist"),
         historyApiFallback: true,
