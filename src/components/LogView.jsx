@@ -34,7 +34,13 @@ const Text = styled.textarea`
     }
 `;
 
-class LogView extends React.Component {
+@withRouter
+@connect(({ files }) => ({ files }),
+    (dispatch) => ({
+        removeFile: (id) => dispatch(removeFile(id)),
+        updateFile: (file) => dispatch(updateFile(file))
+    }))
+export default class LogView extends React.Component {
 
     state = {
         tabIndex: 0,
@@ -64,10 +70,10 @@ class LogView extends React.Component {
     };
 
     onSelectTab = (tabIndex) => {
-        this.setState(() => ({ tabIndex }));
+        this.setState(() => ({tabIndex}));
     };
 
-    renderTabList = ({ id, name, path }) => {
+    renderTabList = ({id, name, path}) => {
         return <Tab key={id}>
             <span title={path}>{name}</span>
             <Button onClick={() => this.onClickCloseTab(event, id)}>
@@ -76,45 +82,32 @@ class LogView extends React.Component {
         </Tab>
     };
 
-    renderTabPanel = ({ content, id }) => {
-        return <Text key={id} value={content} readOnly />
+    renderTabPanel = ({content, id}) => {
+        return <Text key={id} value={content} readOnly/>
     };
 
     render() {
         return (
             <Container>
-                <Header />
+                <Header/>
                 {this.props.files.length > 0 &&
-                    <Tabs
-                        selectedIndex={this.state.tabIndex}
-                        onSelect={(tabIndex) => this.onSelectTab(tabIndex)}
-                        forceRenderTabPanel
-                    >
-                        <TabList>
-                            {this.props.files.map(this.renderTabList)}
-                        </TabList>
-                        <TabPanel>
-                            {this.props.files.map(this.renderTabPanel)}
-                        </TabPanel>
-                    </Tabs>
+                <Tabs
+                    selectedIndex={this.state.tabIndex}
+                    onSelect={(tabIndex) => this.onSelectTab(tabIndex)}
+                    forceRenderTabPanel
+                >
+                    <TabList>
+                        {this.props.files.map(this.renderTabList)}
+                    </TabList>
+                    <TabPanel>
+                        {this.props.files.map(this.renderTabPanel)}
+                    </TabPanel>
+                </Tabs>
                 }
             </Container>
         );
     }
 }
 
-function mapStateToProps(state) {
-    return {
-        files: state.files,
-    };
-}
 
-function mapDispatchToProps(dispatch) {
-    return {
-        removeFile: (id) => dispatch(removeFile(id)),
-        updateFile: (file) => dispatch(updateFile(file)),
-    };
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LogView));
 
