@@ -5,35 +5,39 @@ const merge = require("webpack-merge");
 const path = require("path");
 const webpack = require("webpack");
 
-module.exports = merge(baseConfig, {
-    target: 'electron-renderer',
-    entry: {
-        app: './src/index.jsx'
-    },
-    module: {
-        rules: [{
-            test: /\.css$/,
-            use: [{
-                loader: 'style-loader'
+module.exports = (env, argv) => {
+    const isDev = argv.mode !== "production";
+    return merge(baseConfig, {
+        target: 'electron-renderer',
+        entry: {
+            app: './src/index.jsx'
+        },
+        devtool: isDev ? "source-map" : "",
+        module: {
+            rules: [{
+                test: /\.css$/,
+                use: [{
+                    loader: 'style-loader'
+                }, {
+                    loader: 'css-loader'
+                }]
             }, {
-                loader: 'css-loader'
+                test: /\.html$/,
+                use: 'raw-loader'
             }]
-        }, {
-            test: /\.html$/,
-            use: 'raw-loader'
-        }]
-    },
-    plugins: [
-        new CleanWebpackPlugin('dist/app.js'),
-        new HtmlWebpackPlugin({
-            template: './src/index.html',
-            filename: 'index.html'
-        }),
-        new webpack.HotModuleReplacementPlugin()
-    ],
-    devServer: {
-        contentBase: path.resolve(__dirname, "dist"),
-        historyApiFallback: true,
-        hot: true
-    }
-});
+        },
+        plugins: [
+            new CleanWebpackPlugin('dist/app.js'),
+            new HtmlWebpackPlugin({
+                template: './src/index.html',
+                filename: 'index.html'
+            }),
+            new webpack.HotModuleReplacementPlugin()
+        ],
+        devServer: {
+            contentBase: path.resolve(__dirname, "dist"),
+            historyApiFallback: true,
+            hot: true
+        }
+    });
+};
