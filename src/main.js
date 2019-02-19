@@ -1,5 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain, Menu } from "electron";
-import { join } from "path";
+import { basename, join } from "path";
 import { format } from "url";
 import Watcher from "./watcher";
 const isDevelopment = process.env.NODE_ENV === "development" ? true : false;
@@ -44,9 +44,13 @@ app.on("ready", () => {
       label: "Open File",
       click: () => {
         dialog.showOpenDialog(mainWindow, {
-          title: "Open File",
+          filters: [{
+            name: "Text Files",
+            extensions: ["txt", "log", "json", "odt", "rtf"]
+          }],
           properties: ["openFile"],
-        });
+          title: "Open File",
+        }, ([file]) => watcher.add(basename(file), file));
       },
       accelerator: "CmdOrCtrl+O",
     }, {
