@@ -35,78 +35,78 @@ const Text = styled.textarea`
 `;
 
 @withRouter
-@connect(({ files }) => ({ files }),
-    (dispatch) => ({
-        removeFile: (id) => dispatch(removeFile(id)),
-        updateFile: (file) => dispatch(updateFile(file))
-    }))
+@connect(({files}) => ({files}),
+	(dispatch) => ({
+		removeFile: (id) => dispatch(removeFile(id)),
+		updateFile: (file) => dispatch(updateFile(file))
+	}))
 export default class LogView extends React.Component {
 
-    state = {
-        tabIndex: 0,
-    };
+	state = {
+		tabIndex: 0,
+	};
 
-    componentDidMount() {
-        ipcRenderer.on("log:changed", this.handleFileListener);
-    }
+	componentDidMount() {
+		ipcRenderer.on("log:changed", this.handleFileListener);
+	}
 
-    componentDidUpdate() {
-        if (this.props.files.length === 0) {
-            this.props.history.push("/");
-        }
-    }
+	componentDidUpdate() {
+		if (this.props.files.length === 0) {
+			this.props.history.push("/");
+		}
+	}
 
-    componentWillUnmount() {
-        ipcRenderer.removeListener("log:changed", this.handleFileListener);
-    }
+	componentWillUnmount() {
+		ipcRenderer.removeListener("log:changed", this.handleFileListener);
+	}
 
-    handleFileListener = (event, fileWithContent) => {
-        this.props.updateFile(fileWithContent);
-    };
+	handleFileListener = (event, fileWithContent) => {
+		this.props.updateFile(fileWithContent);
+	};
 
-    onClickCloseTab = (event, id) => {
-        event.preventDefault();
-        this.props.removeFile(id);
-    };
+	onClickCloseTab = (event, id) => {
+		event.preventDefault();
+		this.props.removeFile(id);
+	};
 
-    onSelectTab = (tabIndex) => {
-        this.setState(() => ({tabIndex}));
-    };
+	onSelectTab = (tabIndex) => {
+		this.setState(() => ({tabIndex}));
+	};
 
-    renderTabList = ({id, name, path}) => {
-        return <Tab key={id}>
-            <span title={path}>{name}</span>
-            <Button onClick={() => this.onClickCloseTab(event, id)}>
-                Close
-            </Button>
-        </Tab>
-    };
+	renderTabList = ({id, name, path}) => {
+		return <Tab key={id}>
+			<span title={path}>{name}</span>
+			<Button onClick={() => this.onClickCloseTab(event, id)}>
+				Close
+			</Button>
+		</Tab>
+	};
 
-    renderTabPanel = ({content, id}) => {
-        return <Text key={id} value={content} readOnly/>
-    };
+	renderTabPanel = ({content, id}) => {
+		return <TabPanel key={id}>
+			<Text value={content} readOnly/>
+		</TabPanel>;
+	};
 
-    render() {
-        return (
-            <Container>
-                <Header/>
-                {this.props.files.length > 0 &&
-                <Tabs
-                    selectedIndex={this.state.tabIndex}
-                    onSelect={(tabIndex) => this.onSelectTab(tabIndex)}
-                    forceRenderTabPanel
-                >
-                    <TabList>
-                        {this.props.files.map(this.renderTabList)}
-                    </TabList>
-                    <TabPanel>
-                        {this.props.files.map(this.renderTabPanel)}
-                    </TabPanel>
-                </Tabs>
-                }
-            </Container>
-        );
-    }
+	render() {
+		return (
+			<Container>
+				<Header/>
+				{this.props.files.length > 0 &&
+				<Tabs
+					selectedIndex={this.state.tabIndex}
+					onSelect={(tabIndex) => this.onSelectTab(tabIndex)}
+					forceRenderTabPanel
+				>
+					<TabList>
+						{this.props.files.map(this.renderTabList)}
+					</TabList>
+					{this.props.files.map(this.renderTabPanel)}
+				</Tabs>
+				}
+			</Container>
+		);
+	}
 }
 
 
