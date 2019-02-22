@@ -9,8 +9,8 @@ export const removeFile = (id) => () => {
     ipcRenderer.send("file:removed", id);
 };
 
-export const addFileSuccess = (file) => ({ type: ADD_FILE, file });
+export const addFileSuccess = (file) => ({type: ADD_FILE, file});
 
-export const removeFileSuccess = (id) => ({ type: REMOVE_FILE, id });
+export const removeFileSuccess = (id) => ({type: REMOVE_FILE, id});
 
-export const updateFile = (file) => ({ type: UPDATE_FILE, file });
+export const updateFile = (file) => ({type: UPDATE_FILE, file});

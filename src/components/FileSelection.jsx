@@ -16,7 +16,7 @@ const Container = styled.div`
 
 const StyledDropzone = styled.div`
     align-items: center;
-    background-color: ${({isActive}) => isActive && "#1D2F49" };
+    background-color: ${({isActive}) => isActive && "#1D2F49"};
     border: 4px dashed white;
     border-radius: 5px;
     cursor: pointer;
@@ -42,7 +42,7 @@ const DropzoneHeader = styled.h1`
 
 @withRouter
 @connect(
-    ({ files }) => ({ files }),
+    ({files}) => ({files}),
     (dispatch) => ({
         addFile: (name, path) => dispatch(addFile(name, path))
     }))
@@ -55,11 +55,11 @@ export default class FileSelection extends React.Component {
     }
 
     onDrop = (files) => {
-        const { name, path } = files[0];
+        const {name, path} = files[0];
         this.props.addFile(name, path);
     };
 
-    renderChildren({ getInputProps, getRootProps, isDragActive, isDragReject }) {
+    renderChildren({getInputProps, getRootProps, isDragActive, isDragReject}) {
         return (
             <StyledDropzone {...getRootProps()} isActive={isDragActive}>
                 <input {...getInputProps()} />
@@ -75,7 +75,7 @@ export default class FileSelection extends React.Component {
     render() {
         return (
             <Container>
-                <Header />
+                <Header/>
                 <Dropzone
                     accept="text/*"
                     multiple={false}
