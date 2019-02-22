@@ -13,11 +13,11 @@ const store = configureStore();
 const router = (
     <Provider store={store}>
         <Fragment>
-            <GlobalStyle />
+            <GlobalStyle/>
             <Router>
                 <Switch>
-                    <Route exact path="/" component={FileSelection} />
-                    <Route path="/logs" component={LogView} />
+                    <Route exact path="/" component={FileSelection}/>
+                    <Route path="/logs" component={LogView}/>
                 </Switch>
             </Router>
         </Fragment>

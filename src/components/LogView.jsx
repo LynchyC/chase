@@ -36,7 +36,7 @@ const Text = styled.textarea`
 `;
 
 @withRouter
-@connect(({ files, tabIndex }) => ({ files, tabIndex }),
+@connect(({files, tabIndex}) => ({files, tabIndex}),
     (dispatch) => ({
         removeFile: (id) => dispatch(removeFile(id)),
         setTabIndex: (index) => dispatch(setTabIndex(index)),
@@ -49,7 +49,7 @@ export default class LogView extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { files, history, setTabIndex } = this.props;
+        const {files, history, setTabIndex} = this.props;
         if (files.length === 0) {
             history.push("/");
         } else if (prevProps.files.length !== files.length) {
@@ -85,12 +85,12 @@ export default class LogView extends React.Component {
 
     renderTabPanel = ({content, id}) => {
         return <TabPanel key={id}>
-                <Text value={content} readOnly />
-            </TabPanel>;
+            <Text value={content} readOnly/>
+        </TabPanel>;
     };
 
     render() {
-        const { files, tabIndex } = this.props;
+        const {files, tabIndex} = this.props;
         return (
             <Container>
                 <Header/>

@@ -16,12 +16,12 @@ describe("Application Launch", () => {
 
     afterAll(() => {
         if (app && app.isRunning()) {
-          return app.stop();
+            return app.stop();
         }
     });
 
     test("should open main window", async () => {
-        const { client } = app;
+        const {client} = app;
 
         await client.waitUntilWindowLoaded();
         const count = await client.getWindowCount();
@@ -29,7 +29,7 @@ describe("Application Launch", () => {
     });
 
     test("should show title", async () => {
-        const { client } = app;
+        const {client} = app;
         const title = await client.getTitle();
         return expect(title).toBe("Chase");
     });
