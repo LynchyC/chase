@@ -15,6 +15,7 @@ function createWindow() {
         minWidth: 465,
         webPreferences: {
             backgroundThrottling: false,
+            nodeIntegration: true
         },
     });
 
@@ -46,11 +47,11 @@ app.on("ready", () => {
             click: () => {
                 dialog.showOpenDialog(mainWindow, {
                     filters: [{
-                        name: "Text Files",
-                        extensions: ["txt", "log", "json", "odt", "rtf"]
+                        name: 'Files',
+                        filters: ['doc', 'docx', 'html', 'htm', 'odt', 'pdf', 'xls', 'xlsx', 'ods', 'ppt', 'pptx', 'txt', 'log']
                     }],
-                    properties: ["openFile"],
                     title: "Open File",
+                    properties: ["openFile"],
                 }, ([file]) => watcher.add(basename(file), file));
             },
             accelerator: "CmdOrCtrl+O",
