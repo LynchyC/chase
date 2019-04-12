@@ -3,8 +3,10 @@ import thunk from "redux-thunk";
 import * as reducers from "./reducers";
 
 const state = {
-    files: [],
-    tabIndex: 0
+    watchlist: {
+        files: [],
+        selectedFile: 0
+    }
 };
 
 export default function configureStore() {

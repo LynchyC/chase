@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 
-import { addFile } from "../actions/fileActions";
+import { addFile } from "../actions/watchlist";
 import Header from "./Header";
 
 const Container = styled.div`
@@ -42,15 +42,16 @@ const DropzoneHeader = styled.h1`
 
 @withRouter
 @connect(
-    ({files}) => ({files}),
+    ({watchlist}) => ({watchlist}),
     (dispatch) => ({
         addFile: (name, path) => dispatch(addFile(name, path))
     }))
 export default class FileSelection extends React.Component {
 
     componentDidUpdate() {
-        if (this.props.files.length > 0) {
-            this.props.history.push("/logs");
+        const { history, watchlist } = this.props;
+        if (watchlist.files.length > 0) {
+            history.push("/logs");
         }
     }
 
