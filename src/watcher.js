@@ -18,12 +18,14 @@ export default class Watcher {
     }
 
     add(name, path) {
-        const id = uniqid();
-        this._watchers.push({
-            id,
-            watcher: watch(path, {}, this.eventHandler.bind(this))
-        });
-        this.addFileToCollection(id, path, name);
+        if (name && path) {
+            const id = uniqid();
+            this._watchers.push({
+                id,
+                watcher: watch(path, {}, this.eventHandler.bind(this))
+            });
+            this.addFileToCollection(id, path, name);
+        }
     }
 
     remove(id) {
@@ -84,7 +86,7 @@ export default class Watcher {
                 this.updateFileCollection(filePath);
                 break;
             case "remove":
-                const {id} = this._files.find((f) => f.path === filePath);
+                const { id } = this._files.find((f) => f.path === filePath);
                 this.remove(id);
                 break;
             default:
