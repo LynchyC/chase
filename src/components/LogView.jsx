@@ -5,7 +5,7 @@ import { withRouter } from "react-router";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import styled from "styled-components";
 
-import { followFile, removeFile, selectFile, updateFile } from "../actions/watchlist";
+import { followFile, removeFile, selectFile, updateFile } from "actions/watchlist";
 
 import "react-tabs/style/react-tabs.css";
 

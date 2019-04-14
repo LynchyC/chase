@@ -1,6 +1,6 @@
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import thunk from "redux-thunk";
-import * as reducers from "./reducers";
+import * as reducers from "reducers";
 
 const state = {
     watchlist: {

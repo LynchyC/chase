@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 
-import { addFile } from "../actions/watchlist";
-import Header from "./Header";
+import { addFile } from "actions/watchlist";
+import Header from "components/Header";
 
 const Container = styled.div`
     height: 100vh;

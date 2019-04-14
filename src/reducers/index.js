@@ -1,1 +1,1 @@
-export { default as watchlist } from "./watchlist";
+export { default as watchlist } from "reducers/watchlist";
