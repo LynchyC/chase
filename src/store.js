@@ -4,7 +4,8 @@ import * as reducers from "./reducers";
 
 const state = {
     watchlist: {
-        files: [],
+        files: {},
+        allFiles: [],
         selectedFile: 0
     }
 };

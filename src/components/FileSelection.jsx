@@ -16,7 +16,7 @@ const Container = styled.div`
 
 const StyledDropzone = styled.div`
     align-items: center;
-    background-color: ${({isActive}) => isActive && "#1D2F49"};
+    background-color: ${({ isActive }) => isActive && "#1D2F49"};
     border: 4px dashed white;
     border-radius: 5px;
     cursor: pointer;
@@ -42,7 +42,7 @@ const DropzoneHeader = styled.h1`
 
 @withRouter
 @connect(
-    ({watchlist}) => ({watchlist}),
+    ({ watchlist }) => ({ watchlist }),
     (dispatch) => ({
         addFile: (name, path) => dispatch(addFile(name, path))
     }))
@@ -50,17 +50,17 @@ export default class FileSelection extends React.Component {
 
     componentDidUpdate() {
         const { history, watchlist } = this.props;
-        if (watchlist.files.length > 0) {
+        if (watchlist.allFiles.length) {
             history.push("/logs");
         }
     }
 
     onDrop = (files) => {
-        const {name, path} = files[0];
+        const { name, path } = files[0];
         this.props.addFile(name, path);
     };
 
-    renderChildren({getInputProps, getRootProps, isDragActive, isDragReject}) {
+    renderChildren({ getInputProps, getRootProps, isDragActive, isDragReject }) {
         return (
             <StyledDropzone {...getRootProps()} isActive={isDragActive}>
                 <input {...getInputProps()} />

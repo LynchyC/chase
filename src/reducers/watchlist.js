@@ -1,40 +1,31 @@
 import { ADD_FILE, REMOVE_FILE, SELECT_FILE, UPDATE_FILE } from "../constants";
 
 const addFile = (state, file) => {
-    let { files, selectedFile } = state;
-    if (files.length > 0) {
-        selectedFile += 1;
-    }
-    files.push(file);
+    let { allFiles, files, selectedFile } = state;
+    allFiles.push(file.id);
+    selectedFile = (allFiles.length - 1);
+    files[file.id] = file;
     return { ...state, files, selectedFile };
 };
 
 const updateFile = (state, file) => {
-    let { files } = state;
-    files = files.map((f) => {
-        if (f.id === file.id) {
-            f.content = file.content;
-        }
-        return f;
-    });
+    const { files } = state;
+    const { id, content } = file;
+    files[id].content = content;
     return { ...state, files };
 };
 
-const removeFile = (state, id) => {
-    let { files, selectedFile } = state;
-    let index = null;
-    files = files.filter((file, i) => {
-        if (file.id === id) {
-            index = i;
-        } else {
-            return true;
-        }
-    });
+const removeFile = (state, fileId) => {
+    let { allFiles, files, selectedFile } = state;
+    delete files[fileId];
 
-    if (index === selectedFile) {
-        selectedFile = (selectedFile === 0) ? selectedFile : (selectedFile - 1);
+    const selectedFileIndex = allFiles.findIndex(id => id === fileId);
+    if (selectedFileIndex === allFiles.length - 1 && allFiles.length > 1) {
+        selectedFile -= 1;
     }
-    return { ...state, files, selectedFile };
+
+    allFiles.splice(selectedFileIndex, 1);
+    return { ...state, allFiles, files, selectedFile };
 };
 
 export default (state = {}, action) => {
