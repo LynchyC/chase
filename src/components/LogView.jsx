@@ -36,10 +36,10 @@ const Text = styled.textarea`
 @withRouter
 @connect(({ watchlist }) => ({ watchlist }),
     (dispatch) => ({
-        followFile: (id) => dispatch(followFile(id)),
+        followFile: (id, scrollTop) => dispatch(followFile(id, scrollTop)),
         removeFile: (id) => dispatch(removeFile(id)),
         updateFile: (file) => dispatch(updateFile(file)),
-        selectFile: (index) => dispatch(selectFile(index))
+        selectFile: (index, scrollTop) => dispatch(selectFile(index, scrollTop))
     }))
 export default class LogView extends React.Component {
     selectedFile = React.createRef();
@@ -68,11 +68,9 @@ export default class LogView extends React.Component {
         const { current } = this.selectedFile;
         const { watchlist } = this.props;
         const { allFiles, files, selectedFile } = watchlist;
-        const { follow } = files[allFiles[selectedFile]];
+        const { follow, scrollTop } = files[allFiles[selectedFile]];
 
-        if (follow) {
-            current.scrollTop = current.scrollHeight;
-        }
+        current.scrollTop = follow ? current.scrollHeight : scrollTop;
     }
 
     handleFileListener = (event, fileWithContent) => {
@@ -84,8 +82,14 @@ export default class LogView extends React.Component {
         return watchlist.files[id];
     };
 
+    getScrollTop() {
+        const { current } = this.selectedFile;
+        return (current ? current.scrollTop : null);
+    }
+
     onChangeFollowFile = (id) => {
-        this.props.followFile(id);
+        const scrollTop = this.getScrollTop();
+        this.props.followFile(id, scrollTop);
     };
 
     onClickCloseTab = (event, id) => {
@@ -94,7 +98,8 @@ export default class LogView extends React.Component {
     };
 
     onSelectTab = (index) => {
-        this.props.selectFile(index);
+        const scrollTop = this.getScrollTop();
+        this.props.selectFile(index, scrollTop);
     };
 
     render() {

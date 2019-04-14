@@ -1,4 +1,4 @@
-import { ADD_FILE, FOLLOW_FILE, REMOVE_FILE, SELECT_FILE, UPDATE_FILE } from "../constants";
+import { ADD_FILE, FOLLOW_FILE, REMOVE_FILE, SELECT_FILE, SET_SCROLL, UPDATE_FILE } from "../constants";
 
 const addFile = (state, file) => {
     let { allFiles, files, selectedFile } = state;
@@ -35,16 +35,20 @@ const removeFile = (state, fileId) => {
     return { ...state, allFiles, files, selectedFile };
 };
 
+const setFileScrollTop = (state, id, scrollTop) => {
+    let { files } = state;
+    files[id].scrollTop = scrollTop;
+    return { ...state, files };
+};
+
 export default (state = {}, action) => {
-    const { file, id, index, type } = action;
+    const { file, id, index, scrollTop, type } = action;
 
     switch (type) {
         case ADD_FILE:
             return addFile(state, file);
         case FOLLOW_FILE:
             return followFile(state, id);
-        case UPDATE_FILE:
-            return updateFile(state, file);
         case REMOVE_FILE:
             return removeFile(state, id);
         case SELECT_FILE:
@@ -52,8 +56,11 @@ export default (state = {}, action) => {
                 ...state,
                 selectedFile: index
             };
+        case SET_SCROLL:
+            return setFileScrollTop(state, id, scrollTop);
+        case UPDATE_FILE:
+            return updateFile(state, file);
     }
-
     return state;
 }
 
