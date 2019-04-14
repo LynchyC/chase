@@ -1,5 +1,5 @@
 import { ipcRenderer } from "electron";
-import { addFileSuccess, removeFileSuccess } from "../actions/watchlist";
+import { addFileSuccess, removeFileSuccess } from "actions/watchlist";
 
 export default class IPCManager {
 
