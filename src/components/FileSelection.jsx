@@ -55,9 +55,11 @@ export default class FileSelection extends React.Component {
         }
     }
 
-    onDrop = (files) => {
-        const { name, path } = files[0];
-        this.props.addFile(name, path);
+    onDrop = (files = []) => {
+        if (files.length) {
+            const { name, path } = files[0];
+            this.props.addFile(name, path);
+        }
     };
 
     renderChildren({ getInputProps, getRootProps, isDragActive, isDragReject }) {

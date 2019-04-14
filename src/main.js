@@ -52,7 +52,12 @@ app.on("ready", () => {
                     }],
                     title: "Open File",
                     properties: ["openFile"],
-                }, ([file]) => watcher.add(basename(file), file));
+                }, (files = []) => {
+                    if (files.length) {
+                        const [file] = files;
+                        watcher.add(basename(file), file);
+                    }
+                });
             },
             accelerator: "CmdOrCtrl+O",
         }, {
