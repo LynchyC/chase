@@ -1,11 +1,18 @@
-import { ADD_FILE, REMOVE_FILE, SELECT_FILE, UPDATE_FILE } from "../constants";
+import { ADD_FILE, FOLLOW_FILE, REMOVE_FILE, SELECT_FILE, UPDATE_FILE } from "../constants";
 
 const addFile = (state, file) => {
     let { allFiles, files, selectedFile } = state;
+    file.follow = true;
     allFiles.push(file.id);
     selectedFile = (allFiles.length - 1);
     files[file.id] = file;
     return { ...state, files, selectedFile };
+};
+
+const followFile = (state, id) => {
+    const { files } = state;
+    files[id].follow = !files[id].follow;
+    return { ...state, files };
 };
 
 const updateFile = (state, file) => {
@@ -34,6 +41,8 @@ export default (state = {}, action) => {
     switch (type) {
         case ADD_FILE:
             return addFile(state, file);
+        case FOLLOW_FILE:
+            return followFile(state, id);
         case UPDATE_FILE:
             return updateFile(state, file);
         case REMOVE_FILE:
