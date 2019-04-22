@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { number } from "prop-types";
-import Tab from "components/tabs/Tab";
+import { Tab } from "components/tabs";
 import { Container, TabsList, ActiveTab } from "components/tabs/style";
 
 export default class Tabs extends Component {
