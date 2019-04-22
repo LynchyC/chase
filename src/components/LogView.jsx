@@ -2,8 +2,7 @@ import { ipcRenderer } from "electron";
 import * as React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import Tabs from "components/tabs/Tabs";
-import Tab from "components/tabs/Tab";
+import { Tabs, Tab } from "components/tabs";
 import styled from "styled-components";
 
 import { followFile, removeFile, selectFile, updateFile } from "actions/watchlist";
