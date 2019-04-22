@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { number } from "prop-types";
 import { Tab } from "components/tabs";
-import { Container, TabsList, ActiveTab } from "components/tabs/style";
+import { Container, TabsList, TabBody } from "components/tabs/style";
 
 export default class Tabs extends Component {
 
@@ -15,9 +15,9 @@ export default class Tabs extends Component {
                 <TabsList>
                     {this.renderChildren()}
                 </TabsList>
-                <ActiveTab>
+                <TabBody>
                     {this.renderActiveTab()}
-                </ActiveTab>
+                </TabBody>
             </Container>
         );
     }
