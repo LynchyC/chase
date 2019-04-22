@@ -11,8 +11,8 @@ let watcher;
 function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        minHeight: 515,
-        minWidth: 465,
+        minHeight: 600,
+        minWidth: 725,
         webPreferences: {
             backgroundThrottling: false,
             nodeIntegration: true

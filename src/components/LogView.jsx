@@ -2,28 +2,25 @@ import { ipcRenderer } from "electron";
 import * as React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import Tabs from "components/tabs/Tabs";
+import Tab from "components/tabs/Tab";
 import styled from "styled-components";
 
 import { followFile, removeFile, selectFile, updateFile } from "actions/watchlist";
 
-import "react-tabs/style/react-tabs.css";
-
 const Container = styled.div`
     height: 100vh;
-    padding: 2%;
     width: 100%;
 `;
 
-const Button = styled.button`
-    margin-left: 5px;
-    vertical-align: bottom;
+const ButtonTray = styled.div`
+    height: 1.5rem;
 `;
 
 const Text = styled.textarea`
     border: none;
     color: transparent;
-    height: 85vh;
+    height: calc(100% - 1.5rem);
     resize: none;
     text-shadow: 0 0 0 black;
     width: 100%;
@@ -46,7 +43,9 @@ export default class LogView extends React.Component {
 
     componentDidMount() {
         ipcRenderer.on("log:changed", this.handleFileListener);
-        this.setScroll();
+        if (this.props.watchlist.allFiles.length) {
+            this.setScroll();
+        }
     }
 
     componentDidUpdate() {
@@ -92,12 +91,12 @@ export default class LogView extends React.Component {
         this.props.followFile(id, scrollTop);
     };
 
-    onClickCloseTab = (event, id) => {
-        event.preventDefault();
+    onClickIcon = (evt, id) => {
+        evt.stopPropagation();
         this.props.removeFile(id);
     };
 
-    onSelectTab = (index) => {
+    onClickTab = (index) => {
         const scrollTop = this.getScrollTop();
         this.props.selectFile(index, scrollTop);
     };
@@ -108,43 +107,35 @@ export default class LogView extends React.Component {
         return (
             <Container>
                 {allFiles.length > 0 &&
-                <Tabs
-                    selectedIndex={selectedFile}
-                    onSelect={(index) => this.onSelectTab(index)}
-                >
-                    <TabList>
-                        {allFiles.map(this.renderTabList)}
-                    </TabList>
-                    {allFiles.map(this.renderTabPanel)}
+                <Tabs activeTabIndex={selectedFile}>
+                    {allFiles.map(this.renderFiles)}
                 </Tabs>
                 }
             </Container>
         );
-    }
-
-    renderTabList = (id) => {
-        const { name, path } = this.getFile(id);
-        return <Tab key={id}>
-            <span title={path}>{name}</span>
-            <Button onClick={() => this.onClickCloseTab(event, id)}>
-                Close
-            </Button>
-        </Tab>
     };
 
-    renderTabPanel = (id, index) => {
+    renderFiles = (id, index) => {
         const { watchlist: { selectedFile } } = this.props;
         const active = (selectedFile === index);
-        const { content, follow } = this.getFile(id);
+        const { content, follow, name, path } = this.getFile(id);
 
-        return <TabPanel key={id}>
+        return <Tab key={id}
+                    heading={name}
+                    onClickTab={() => this.onClickTab(index)}
+                    onClickIcon={(evt) => this.onClickIcon(evt, id)}
+                    tabIndex={index}
+                    title={path}>
             <Text value={content}
                   ref={active ? this.selectedFile : null}
                   readOnly/>
-            <label>Follow</label>
-            <input type="checkbox"
-                   onChange={() => this.onChangeFollowFile(id)}
-                   checked={follow}/>
-        </TabPanel>
-    };
+            <ButtonTray>
+                <label>Follow</label>
+                <input type="checkbox"
+                       onChange={() => this.onChangeFollowFile(id)}
+                       checked={follow}/>
+            </ButtonTray>
+
+        </Tab>
+    }
 }

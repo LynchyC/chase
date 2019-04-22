@@ -20,6 +20,7 @@ module.exports = {
         extensions: ['.jsx', '.js'],
         modules: [
             path.join(__dirname, 'src'),
+            path.join(__dirname, 'resources'),
             'node_modules',
         ]
     },
