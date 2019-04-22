@@ -27,7 +27,7 @@ const removeFile = (state, fileId) => {
     delete files[fileId];
 
     const selectedFileIndex = allFiles.findIndex(id => id === fileId);
-    if (selectedFileIndex === allFiles.length - 1 && allFiles.length > 1) {
+    if (allFiles.length > 1 && selectedFile > 0 && selectedFile === allFiles.length - 1) {
         selectedFile -= 1;
     }
 
