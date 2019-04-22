@@ -9,13 +9,20 @@ export const Container = styled.div`
 
 export const TabsList = styled.ul`
     border-bottom: 0.016rem solid #808080;
+    display: flex;
+    flex-wrap: nowrap;
     height: 2.5rem;
     list-style: none;
     margin: 0;
+    overflow-x: auto;
     padding: 0;
+    
+    ::-webkit-scrollbar {
+        display: none;
+    }
 `;
 
-export const ActiveTab = styled.div`
+export const TabBody = styled.div`
     height: calc(100% - 2.5rem);
     max-height: 100%;
 `;
@@ -40,6 +47,7 @@ export const Item = styled.li`
     border-top-right-radius: 0.25rem;
     cursor: pointer;
     display: inline-block;
+    flex: 0 0 auto;
     height: 100%;
     margin-right: 0.1rem;
     padding: 0.4rem 0.4rem 0.2rem 0.4rem;
