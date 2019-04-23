@@ -6,20 +6,41 @@ import { Tabs, Tab } from "components/tabs";
 import styled from "styled-components";
 
 import { followFile, removeFile, selectFile, updateFile } from "actions/watchlist";
+import IPCManager from "utils/ipcManager";
 
 const Container = styled.div`
     height: 100vh;
     width: 100%;
 `;
 
+const Button = styled.button`
+    background-color: #C0C0C0;
+    border: 2px solid #FFFFFF;
+    border-radius: 3px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-weight: bold;
+    
+    &:hover {
+        text-decoration: underline;
+    }
+`;
+
 const ButtonTray = styled.div`
-    height: 1.5rem;
+    display: flex;
+    height: 2.5rem;
+    justify-content: space-between;
+`;
+
+const Label = styled.label`
+    align-self: center;
+    display: inline-block;
 `;
 
 const Text = styled.textarea`
     border: none;
     color: transparent;
-    height: calc(100% - 1.5rem);
+    height: calc(100% - 2.5rem);
     resize: none;
     text-shadow: 0 0 0 black;
     width: 100%;
@@ -100,6 +121,10 @@ export default class LogView extends React.Component {
         this.props.selectFile(index, scrollTop);
     };
 
+    onClickOpenFile = (id) => {
+        IPCManager.openFileInExplorer(id);
+    };
+
     render() {
         const { watchlist } = this.props;
         const { allFiles, selectedFile } = watchlist;
@@ -129,10 +154,15 @@ export default class LogView extends React.Component {
                   ref={active ? this.selectedFile : null}
                   readOnly/>
             <ButtonTray>
-                <label>Follow</label>
-                <input type="checkbox"
-                       onChange={() => this.onChangeFollowFile(id)}
-                       checked={follow}/>
+                <Label>
+                    Follow
+                    <input type="checkbox"
+                           onChange={() => this.onChangeFollowFile(id)}
+                           checked={follow}/>
+                </Label>
+                <Button onClick={() => this.onClickOpenFile(id)}>
+                    Open in Explorer
+                </Button>
             </ButtonTray>
 
         </Tab>
