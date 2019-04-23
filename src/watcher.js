@@ -17,6 +17,10 @@ export default class Watcher {
         return this._files;
     }
 
+    getFile(id) {
+        return this.getWatchedFiles().find(file => file.id === id);
+    }
+
     add(name, path) {
         if (name && path) {
             const id = uniqid();

@@ -12,4 +12,8 @@ export default class IPCManager {
             store.dispatch(removeFileSuccess(deletedId));
         });
     }
+
+    static openFileInExplorer(id) {
+        ipcRenderer.send("file:open-in-explorer", id);
+    }
 }

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, Menu } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, Menu, shell } from "electron";
 import { basename, join } from "path";
 import { format } from "url";
 import Watcher from "./watcher";
@@ -111,4 +111,9 @@ ipcMain.on("file:added", (e, name, path) => {
 
 ipcMain.on("file:removed", (e, id) => {
     watcher.remove(id);
+});
+
+ipcMain.on("file:open-in-explorer", (e, id) => {
+    const { path } = watcher.getFile(id);
+    shell.showItemInFolder(path);
 });
