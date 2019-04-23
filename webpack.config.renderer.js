@@ -22,7 +22,7 @@ module.exports = (env, argv) => {
                     loader: 'css-loader'
                 }]
             }, {
-                test: /\.(jpg|png|gif|svg)$/,
+                test: /\.(jpg|png|gif|svg|ttf|eot|woff|woff2)$/,
                 use: {
                     loader: 'file-loader',
                     options: {
