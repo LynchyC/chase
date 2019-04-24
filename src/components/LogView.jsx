@@ -5,7 +5,7 @@ import { withRouter } from "react-router";
 import { Tabs, Tab } from "components/tabs";
 import styled from "styled-components";
 
-import { followFile, removeFile, selectFile, updateFile } from "actions/watchlist";
+import { followFile, removeFile, selectFile, setScroll, updateFile } from "actions/watchlist";
 import IPCManager from "utils/ipcManager";
 
 const Container = styled.div`
@@ -56,7 +56,8 @@ const Text = styled.textarea`
         followFile: (id, scrollTop) => dispatch(followFile(id, scrollTop)),
         removeFile: (id) => dispatch(removeFile(id)),
         updateFile: (file) => dispatch(updateFile(file)),
-        selectFile: (index, scrollTop) => dispatch(selectFile(index, scrollTop))
+        selectFile: (index) => dispatch(selectFile(index)),
+        setScroll: (id, scrollTop) => dispatch(setScroll(id, scrollTop))
     }))
 export default class LogView extends React.Component {
     selectedFile = React.createRef();
@@ -64,18 +65,32 @@ export default class LogView extends React.Component {
     componentDidMount() {
         ipcRenderer.on("log:changed", this.handleFileListener);
         if (this.props.watchlist.allFiles.length) {
-            this.setScroll();
+            this.setTabScrollTop();
         }
     }
 
-    componentDidUpdate() {
-        const { history, watchlist } = this.props;
+    getSnapshotBeforeUpdate() {
+        return this.getScrollTop();
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const { history, setScroll, watchlist } = this.props;
+        const { allFiles, files } = watchlist;
+        const { allFiles: prevFiles, selectedFile: prevSelectedFile } = prevProps.watchlist;
         if (!watchlist.allFiles.length) {
             history.push("/");
         }
 
+        const oldFile = files[allFiles[prevSelectedFile]];
+        if (allFiles.length > 0
+            && allFiles.length === prevFiles.length
+            && oldFile.scrollTop !== null
+            && oldFile.scrollTop !== snapshot) {
+            setScroll(oldFile.id, snapshot);
+        }
+
         if (this.selectedFile.current) {
-            this.setScroll();
+            this.setTabScrollTop();
         }
     }
 
@@ -83,7 +98,7 @@ export default class LogView extends React.Component {
         ipcRenderer.removeListener("log:changed", this.handleFileListener);
     }
 
-    setScroll() {
+    setTabScrollTop() {
         const { current } = this.selectedFile;
         const { watchlist } = this.props;
         const { allFiles, files, selectedFile } = watchlist;
@@ -117,8 +132,11 @@ export default class LogView extends React.Component {
     };
 
     onClickTab = (index) => {
+        const { allFiles, selectedFile } = this.props.watchlist;
         const scrollTop = this.getScrollTop();
-        this.props.selectFile(index, scrollTop);
+
+        this.props.setScroll(allFiles[selectedFile], scrollTop);
+        this.props.selectFile(index);
     };
 
     onClickOpenFile = (id) => {

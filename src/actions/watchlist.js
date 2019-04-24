@@ -18,12 +18,7 @@ export const removeFile = (id) => () => {
 
 export const removeFileSuccess = (id) => ({ type: REMOVE_FILE, id });
 
-export const selectFile = (index, scrollTop) => (dispatch, getState) => {
-    const { watchlist } = getState();
-    const { allFiles, selectedFile } = watchlist;
-    dispatch(setScroll(allFiles[selectedFile], scrollTop));
-    dispatch(({ type: SELECT_FILE, index }));
-};
+export const selectFile = (index) => (({ type: SELECT_FILE, index }));
 
 export const setScroll = (id, scrollTop) => ({ type: SET_SCROLL, id, scrollTop });
 

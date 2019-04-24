@@ -2,16 +2,20 @@ import { ADD_FILE, FOLLOW_FILE, REMOVE_FILE, SELECT_FILE, SET_SCROLL, UPDATE_FIL
 
 const addFile = (state, file) => {
     let { allFiles, files, selectedFile } = state;
-    file.follow = true;
     allFiles.push(file.id);
     selectedFile = (allFiles.length - 1);
-    files[file.id] = file;
+    files[file.id] = {
+        ...file,
+        follow: true,
+        scrollTop: null
+    };
     return { ...state, files, selectedFile };
 };
 
 const followFile = (state, id) => {
     const { files } = state;
     files[id].follow = !files[id].follow;
+    if(files[id].follow) files[id].scrollTop = null;
     return { ...state, files };
 };
 
