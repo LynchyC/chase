@@ -17,18 +17,23 @@ export default class Watcher {
         return this._files;
     }
 
-    getFile(id) {
-        return this.getWatchedFiles().find(file => file.id === id);
+    getFileByKeyValue(key, value) {
+        return this.getWatchedFiles().find(file => file[key] === value);
     }
 
     add(name, path) {
         if (name && path) {
-            const id = uniqid();
-            this._watchers.push({
-                id,
-                watcher: watch(path, {}, this.eventHandler.bind(this))
-            });
-            this.addFileToCollection(id, path, name);
+            const existingInstance = this.getFileByKeyValue("path", path);
+            if (existingInstance) {
+                this._mainWindow.webContents.send("file:watching", existingInstance.id)
+            } else {
+                const id = uniqid();
+                this._watchers.push({
+                    id,
+                    watcher: watch(path, {}, this.eventHandler.bind(this))
+                });
+                this.addFileToCollection(id, path, name);
+            }
         }
     }
 
