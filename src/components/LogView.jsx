@@ -81,10 +81,10 @@ export default class LogView extends React.Component {
             history.push("/");
         }
 
-        const oldFile = files[allFiles[prevSelectedFile]];
+        const oldFile = files[allFiles[prevSelectedFile]] || {};
         if (allFiles.length > 0
             && allFiles.length === prevFiles.length
-            && oldFile.scrollTop !== null
+            && oldFile.scrollTop != null
             && oldFile.scrollTop !== snapshot) {
             setScroll(oldFile.id, snapshot);
         }
