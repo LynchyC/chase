@@ -114,6 +114,6 @@ ipcMain.on("file:removed", (e, id) => {
 });
 
 ipcMain.on("file:open-in-explorer", (e, id) => {
-    const { path } = watcher.getFileByKeyValue("key", id);
+    const { path } = watcher.getFileByKeyValue("id", id);
     shell.showItemInFolder(path);
 });
