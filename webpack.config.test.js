@@ -20,6 +20,14 @@ module.exports = merge(baseConfig, {
                 loader: 'css-loader'
             }]
         }, {
+            test: /\.(jpg|png|gif|svg|ttf|eot|woff|woff2)$/,
+            use: {
+                loader: 'file-loader',
+                options: {
+                    name: '[path][name].[ext]'
+                }
+            }
+        }, {
             test: /\.html$/,
             use: 'raw-loader'
         }]
