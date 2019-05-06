@@ -10,7 +10,7 @@
         "build:renderer": "webpack --mode production --config webpack.config.renderer.js",
         "build:test": "webpack --mode none --config webpack.config.test.js",
         "electron": "electron ./dist/main.js",
-        "deploy": "electron-builder -wl",
+        "deploy": "electron-builder -wl -p=never",
         "jest:e2e": "jest test/e2e",
         "release": "npm-run-all build deploy",
         "serve": "webpack-dev-server --mode development --config webpack.config.renderer.js",
