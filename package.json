@@ -34,15 +34,16 @@
         ],
         "linux": {
             "target": [
+                "appImage",
                 "deb",
-                "snap",
-                "appImage"
+                "snap"
             ]
         },
         "productName": "chase",
         "win": {
             "target": [
-                "nsis"
+                "nsis",
+                "portable"
             ]
         }
     },

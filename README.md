@@ -1,15 +1,20 @@
 # Chase
-An real time logging application built using Electron
+Real time log retrieval application built using Electron
+
+## Installation
+Install the dependencies with the command `npm install`
 
 ## Development
+To start the application, open two separate terminals and run one of the following in each:
 
-Install the dependencies using `npm install`
-
-To start the application in development mode, it takes the combination of two npm commands to be ran in parallel:
-
-- `npm run start`
+- `npm start`
 - `npm run serve`
+
+## Deployment
+This project uses the [electron-builder](https://github.com/electron-userland/electron-builder) library to build the distribution packages. 
+
+To minimise on installed system dependencies, I would recommend using the [multi-platform approach with Docker](https://www.electron.build/multi-platform-build#docker)
 
 ## Testing
 
-To execute the tests, just run `npm run test` in the terminal.
+To execute the tests, run the command `npm run test`
