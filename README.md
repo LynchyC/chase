@@ -1,4 +1,7 @@
 # Chase
+
+![Build Status](https://codebuild.eu-west-2.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiWDB3bVM4UUFRZXFUeTZvRFRGUGQ5UFRzYlBBY0kraEc2SThGQnNuRXh4RlVQcXpjWEdJU1o4bWcwVHFCZjZIcldGKzRJZVMweDJMcTRqZWJDKzVsWms0PSIsIml2UGFyYW1ldGVyU3BlYyI6InZOM0hiZXh3S0gwMmlNd1UiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
+
 Real time log retrieval application built using Electron
 
 ## Installation
