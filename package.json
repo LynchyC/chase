@@ -37,7 +37,8 @@
                 "appImage",
                 "deb",
                 "snap"
-            ]
+            ],
+            "category": "Utility"
         },
         "productName": "chase",
         "win": {
