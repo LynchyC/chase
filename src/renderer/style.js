@@ -1,5 +1,5 @@
 import { createGlobalStyle } from "styled-components";
-import RobotoFont from "fonts/Roboto/Roboto-Regular.ttf";
+import Roboto from "fonts/Roboto/Roboto-Regular.ttf";
 
 export default createGlobalStyle`
     html, body, #app {
@@ -13,7 +13,7 @@ export default createGlobalStyle`
     
     @font-face {
         font-family: "Roboto";
-        src: url(${RobotoFont}) format("truetype");
+        src: url(${Roboto}) format("truetype");
     }
     
     * {

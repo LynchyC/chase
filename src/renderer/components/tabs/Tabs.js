@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { number } from "prop-types";
-import { Tab } from "components/tabs";
-import { Container, TabsList, TabBody } from "components/tabs/style";
+import { Tab } from "renderer/components/tabs/index";
+import { Container, TabsList, TabBody } from "renderer/components/tabs/style";
 
 export default class Tabs extends Component {
 

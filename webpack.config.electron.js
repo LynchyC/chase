@@ -7,7 +7,7 @@ module.exports = (env, argv) => {
     return merge(baseConfig, {
         target: 'electron-main',
         entry: {
-            main: './src/main.js'
+            main: './src/main/main.js'
         },
         devtool: isDev ? "source-map" : "",
         plugins: [

@@ -1,6 +1,6 @@
 const baseConfig = require("./webpack.config.base");
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require("clean-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const merge = require("webpack-merge");
 const path = require("path");
 const webpack = require("webpack");
@@ -8,37 +8,30 @@ const webpack = require("webpack");
 module.exports = (env, argv) => {
     const isDev = argv.mode !== "production";
     return merge(baseConfig, {
-        target: 'electron-renderer',
+        target: "electron-renderer",
         entry: {
-            app: './src/index.jsx'
+            app: "./src/renderer/index.jsx"
         },
         devtool: isDev ? "source-map" : "",
         module: {
             rules: [{
-                test: /\.css$/,
-                use: [{
-                    loader: 'style-loader'
-                }, {
-                    loader: 'css-loader'
-                }]
-            }, {
                 test: /\.(jpg|png|gif|svg|ttf|eot|woff|woff2)$/,
                 use: {
-                    loader: 'file-loader',
+                    loader: "file-loader",
                     options: {
-                        name: '[path][name].[ext]'
+                        name: "[path][name].[ext]"
                     }
                 }
             }, {
                 test: /\.html$/,
-                use: 'raw-loader'
+                use: "raw-loader"
             }]
         },
         plugins: [
-            new CleanWebpackPlugin('dist/app.js'),
+            new CleanWebpackPlugin("dist/app.js"),
             new HtmlWebpackPlugin({
-                template: './src/index.html',
-                filename: 'index.html'
+                template: "./src/renderer/index.html",
+                filename: "index.html"
             }),
             new webpack.HotModuleReplacementPlugin()
         ],

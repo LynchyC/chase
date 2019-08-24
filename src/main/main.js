@@ -1,9 +1,9 @@
 import { app, BrowserWindow, dialog, ipcMain, Menu, shell } from "electron";
 import { basename, join } from "path";
 import { format } from "url";
-import Watcher from "./watcher";
+import Watcher from "main/watcher";
 
-const isDevelopment = process.env.NODE_ENV === "development" ? true : false;
+const isDevelopment = process.env.NODE_ENV === "development";
 
 let mainWindow;
 let watcher;
@@ -16,7 +16,7 @@ function createWindow() {
         webPreferences: {
             backgroundThrottling: false,
             nodeIntegration: true
-        },
+        }
     });
 
     watcher = new Watcher(mainWindow);
@@ -47,11 +47,11 @@ app.on("ready", () => {
             click: () => {
                 dialog.showOpenDialog(mainWindow, {
                     filters: [{
-                        name: 'Files',
-                        filters: ['doc', 'docx', 'html', 'htm', 'odt', 'pdf', 'xls', 'xlsx', 'ods', 'ppt', 'pptx', 'txt', 'log']
+                        name: "Files",
+                        filters: ["doc", "docx", "html", "htm", "odt", "pdf", "xls", "xlsx", "ods", "ppt", "pptx", "txt", "log"]
                     }],
                     title: "Open File",
-                    properties: ["openFile"],
+                    properties: ["openFile"]
                 }, (files = []) => {
                     if (files.length) {
                         const [file] = files;
@@ -59,11 +59,11 @@ app.on("ready", () => {
                     }
                 });
             },
-            accelerator: "CmdOrCtrl+O",
+            accelerator: "CmdOrCtrl+O"
         }, {
             role: "close",
-            accelerator: "CmdOrCtrl+Q",
-        }],
+            accelerator: "CmdOrCtrl+Q"
+        }]
     }];
 
     if (isDevelopment) {
@@ -78,14 +78,14 @@ app.on("ready", () => {
                         mainWindow.webContents.openDevTools();
                     }
                 },
-                accelerator: "CmdOrCtrl+Shift+F12",
+                accelerator: "CmdOrCtrl+Shift+F12"
             }, {
                 label: "Force Reload",
                 click() {
                     mainWindow.reload();
                 },
-                accelerator: "CmdOrCtrl+Shift+R",
-            }],
+                accelerator: "CmdOrCtrl+Shift+R"
+            }]
         }];
     }
 

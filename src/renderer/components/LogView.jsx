@@ -2,11 +2,11 @@ import { ipcRenderer } from "electron";
 import * as React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { Tabs, Tab } from "components/tabs";
+import { Tabs, Tab } from "renderer/components/tabs";
 import styled from "styled-components";
 
-import { followFile, removeFile, selectFile, setScroll, updateFile } from "actions/watchlist";
-import IPCManager from "utils/ipcManager";
+import { followFile, removeFile, selectFile, setScroll, updateFile } from "renderer/actions/watchlist";
+import IPCManager from "renderer/utils/ipcManager";
 
 const Container = styled.div`
     height: 100vh;
