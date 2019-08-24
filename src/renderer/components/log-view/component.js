@@ -1,66 +1,12 @@
 import { ipcRenderer } from "electron";
-import * as React from "react";
-import { connect } from "react-redux";
-import { withRouter } from "react-router";
-import { Tabs, Tab } from "renderer/components/tabs";
-import styled from "styled-components";
+import React, { Component, createRef } from "react";
 
-import { followFile, removeFile, selectFile, setScroll, updateFile } from "renderer/actions/watchlist";
-import IPCManager from "renderer/utils/ipcManager";
+import { Button, ButtonTray, Container, Label, Text } from "renderer/components/log-view/style";
+import { Tab, Tabs } from "renderer/components/tabs";
+import IpcManager from "renderer/ipc-manager";
 
-const Container = styled.div`
-    height: 100vh;
-    width: 100%;
-`;
-
-const Button = styled.button`
-    background-color: #C0C0C0;
-    border: 2px solid #FFFFFF;
-    border-radius: 3px;
-    color: #FFFFFF;
-    cursor: pointer;
-    font-weight: bold;
-    
-    &:hover {
-        text-decoration: underline;
-    }
-`;
-
-const ButtonTray = styled.div`
-    display: flex;
-    height: 2.5rem;
-    justify-content: space-between;
-`;
-
-const Label = styled.label`
-    align-self: center;
-    display: inline-block;
-`;
-
-const Text = styled.textarea`
-    border: none;
-    color: transparent;
-    height: calc(100% - 2.5rem);
-    resize: none;
-    text-shadow: 0 0 0 black;
-    width: 100%;
-    
-    &:focus {
-        outline: none;
-    }
-`;
-
-@withRouter
-@connect(({ watchlist }) => ({ watchlist }),
-    (dispatch) => ({
-        followFile: (id, scrollTop) => dispatch(followFile(id, scrollTop)),
-        removeFile: (id) => dispatch(removeFile(id)),
-        updateFile: (file) => dispatch(updateFile(file)),
-        selectFile: (index) => dispatch(selectFile(index)),
-        setScroll: (id, scrollTop) => dispatch(setScroll(id, scrollTop))
-    }))
-export default class LogView extends React.Component {
-    selectedFile = React.createRef();
+export default class LogView extends Component {
+    selectedFile = createRef();
 
     componentDidMount() {
         ipcRenderer.on("log:changed", this.handleFileListener);
@@ -122,50 +68,42 @@ export default class LogView extends React.Component {
     }
 
     onChangeFollowFile = (id) => {
-        const scrollTop = this.getScrollTop();
-        this.props.followFile(id, scrollTop);
+        return () => {
+            const scrollTop = this.getScrollTop();
+            this.props.followFile(id, scrollTop);
+        };
     };
 
-    onClickIcon = (evt, id) => {
-        evt.stopPropagation();
-        this.props.removeFile(id);
+    onClickIcon = (id) => {
+        return (evt) => {
+            evt.stopPropagation();
+            this.props.removeFile(id);
+        };
     };
 
     onClickTab = (index) => {
-        const { allFiles, selectedFile } = this.props.watchlist;
-        const scrollTop = this.getScrollTop();
-
-        this.props.setScroll(allFiles[selectedFile], scrollTop);
-        this.props.selectFile(index);
+        return () => {
+            const { allFiles, selectedFile } = this.props.watchlist;
+            const scrollTop = this.getScrollTop();
+            this.props.setScroll(allFiles[selectedFile], scrollTop);
+            this.props.selectFile(index);
+        };
     };
 
     onClickOpenFile = (id) => {
-        IPCManager.openFileInExplorer(id);
-    };
-
-    render() {
-        const { watchlist } = this.props;
-        const { allFiles, selectedFile } = watchlist;
-        return (
-            <Container>
-                {allFiles.length > 0 &&
-                <Tabs activeTabIndex={selectedFile}>
-                    {allFiles.map(this.renderFiles)}
-                </Tabs>
-                }
-            </Container>
-        );
+        return () => {
+            IpcManager.openFileInExplorer(id);
+        };
     };
 
     renderFiles = (id, index) => {
         const { watchlist: { selectedFile } } = this.props;
         const active = (selectedFile === index);
         const { content, follow, name, path } = this.getFile(id);
-
         return <Tab key={id}
                     heading={name}
-                    onClickTab={() => this.onClickTab(index)}
-                    onClickIcon={(evt) => this.onClickIcon(evt, id)}
+                    onClickTab={this.onClickTab(index)}
+                    onClickIcon={this.onClickIcon(id)}
                     tabIndex={index}
                     title={path}>
             <Text value={content}
@@ -175,14 +113,25 @@ export default class LogView extends React.Component {
                 <Label>
                     Follow
                     <input type="checkbox"
-                           onChange={() => this.onChangeFollowFile(id)}
+                           onChange={this.onChangeFollowFile(id)}
                            checked={follow}/>
                 </Label>
-                <Button onClick={() => this.onClickOpenFile(id)}>
+                <Button onClick={this.onClickOpenFile(id)}>
                     Open in Explorer
                 </Button>
             </ButtonTray>
-
         </Tab>
-    }
+    };
+
+    render() {
+        const { watchlist } = this.props;
+        const { allFiles, selectedFile } = watchlist;
+        return <Container>
+            {
+                allFiles.length > 0 && <Tabs activeTabIndex={selectedFile}>
+                    {allFiles.map(this.renderFiles)}
+                </Tabs>
+            }
+        </Container>
+    };
 }

@@ -1,52 +1,9 @@
-import * as React from "react";
+import React, { Component } from "react";
 import Dropzone from "react-dropzone";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import styled from "styled-components";
 
-import { addFile } from "renderer/actions/watchlist";
-import Header from "renderer/components/Header";
+import { Container, DropzoneHeader, Header, HeaderText, StyledDropzone } from "./style";
 
-const Container = styled.div`
-    height: 100vh;
-    overflow: hidden;
-    padding: 0 5%;
-    width: 100%;
-`;
-
-const StyledDropzone = styled.div`
-    align-items: center;
-    background-color: ${({ isActive }) => isActive && "#1D2F49"};
-    border: 4px dashed white;
-    border-radius: 5px;
-    cursor: pointer;
-    display: flex;
-    height: 85vh;
-    justify-content: center;
-    outline: 0;
-    user-select: none;
-
-    @media screen and (min-height: 480px) and (min-width: 520px) {
-        border: 8px dashed white;
-    }
-`;
-
-const DropzoneHeader = styled.h1`
-    text-align: center;
-    font-size: 1rem;
-
-    @media screen and (min-height: 480px) and (min-width: 520px) {
-        font-size: 2.5rem;
-    }
-`;
-
-@withRouter
-@connect(
-    ({ watchlist }) => ({ watchlist }),
-    (dispatch) => ({
-        addFile: (name, path) => dispatch(addFile(name, path))
-    }))
-export default class FileSelection extends React.Component {
+export default class FileSelection extends Component {
 
     componentDidUpdate() {
         const { history, watchlist } = this.props;
@@ -78,7 +35,11 @@ export default class FileSelection extends React.Component {
     render() {
         return (
             <Container>
-                <Header/>
+                <Header>
+                    <HeaderText>
+                        Chase
+                    </HeaderText>
+                </Header>
                 <Dropzone
                     accept="text/*"
                     multiple={false}

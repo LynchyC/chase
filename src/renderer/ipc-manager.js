@@ -1,7 +1,7 @@
 import { ipcRenderer } from "electron";
 import { addFileSuccess, removeFileSuccess, selectFile } from "renderer/actions/watchlist";
 
-export default class IPCManager {
+export default class IpcManager {
 
     static registerListeners(store) {
         ipcRenderer.on("file:watching", (event, file) => {

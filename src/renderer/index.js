@@ -3,10 +3,10 @@ import { render } from "react-dom";
 import { Provider } from "react-redux";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import GlobalStyle from "renderer/style";
-import FileSelection from "renderer/components/FileSelection";
-import LogView from "renderer/components/LogView";
+import FileSelection from "renderer/components/file-selection";
+import LogView from "renderer/components/log-view";
 import configureStore from "renderer/store";
-import IPCManager from "renderer/utils/ipcManager";
+import IpcManager from "renderer/ipc-manager";
 
 const store = configureStore();
 
@@ -24,6 +24,6 @@ const router = (
     </Provider>
 );
 
-IPCManager.registerListeners(store);
+IpcManager.registerListeners(store);
 
 render(router, document.getElementById("app"));
