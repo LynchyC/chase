@@ -6,56 +6,44 @@ import { promisify } from "util";
 const promisifyReadFile = promisify(readFile);
 
 class Watcher {
-
-    constructor() {
-        this._watchers = [];
-        this._files = []
-    }
+    _watchers = {};
+    _files = {};
 
     initialize(mainWindow) {
         this._mainWindow = mainWindow;
     }
 
-    getWatchedFiles() {
-        return this._files;
-    }
-
     getFileByKeyValue(key, value) {
-        return this.getWatchedFiles().find(file => file[key] === value);
+        return Object.values(this._files).find(file => {
+            return file[key] === value;
+        }) || {};
     }
 
     add(name = "", path = "") {
-        const existingInstance = this.getFileByKeyValue("path", path);
-        if (existingInstance) {
-            this._mainWindow.webContents.send("file:watching", existingInstance.id)
+        const { id } = this.getFileByKeyValue("path", path);
+        if (id) {
+            this._mainWindow.webContents.send("file:watching", id)
         } else {
             const id = uniqid();
-            this._watchers.push({
+            this._watchers[id] = {
                 id,
-                watcher: watch(path, {}, this.eventHandler.bind(this))
-            });
+                watcher: watch(path, {}, this.eventHandler(id))
+            };
             this.addFileToCollection(id, path, name);
         }
     }
 
     remove(id) {
-        this._watchers = this._watchers.filter((f) => {
-            if (f.id === id) {
-                f.watcher.close();
-                this.removeFileFromCollection(id);
-            } else {
-                return f;
-            }
-        });
+        this._watchers[id].watcher.close();
+        delete this._watchers[id];
+        delete this._files[id];
         this._mainWindow.webContents.send("log:unloaded", id);
     }
 
     end() {
-        this._watchers.map((w) => {
-            w.watcher.close();
-        });
-        this._watchers = [];
-        this._files = [];
+        Object.values(this._watchers).forEach(({ watcher }) => watcher.close());
+        this._watchers = {};
+        this._files = {};
     }
 
     async addFileToCollection(id, path, name) {
@@ -65,48 +53,37 @@ class Watcher {
             path,
             content: await this.retrieveFileContents(path)
         };
-        this._files.push(file);
+        this._files[id] = file;
         this._mainWindow.webContents.send("file:watching", file);
     }
 
-    async updateFileCollection(path) {
+    async updateFileCollection(id, path) {
         try {
-            let file = null;
-            const content = await this.retrieveFileContents(path);
-            this._files = this._files.map((f) => {
-                if (f.path === path) {
-                    file = f;
-                    return { ...f, content };
-                }
-                return f;
-            });
-            this._mainWindow.webContents.send("log:changed", file);
+            this._files[id].content = await this.retrieveFileContents(path);
+            this._mainWindow.webContents.send("log:changed", this._files[id]);
         } catch (error) {
             throw error;
         }
     }
 
-    removeFileFromCollection(id) {
-        this._files = this._files.filter((f) => f.id !== id);
-    }
-
-    eventHandler(event, filePath) {
-        switch (event) {
-            case "update":
-                this.updateFileCollection(filePath);
-                break;
-            case "remove":
-                const { id } = this._files.find((f) => f.path === filePath);
-                this.remove(id);
-                break;
-            default:
-                throw new Error(`Unknown event '${event}' has occurred.`);
-        }
-    }
-
     async retrieveFileContents(path) {
-        return await promisifyReadFile(path, "utf-8");
+        return promisifyReadFile(path, "utf-8");
     }
+
+    eventHandler = (id) => {
+        return (event, filePath) => {
+            switch (event) {
+                case "update":
+                    this.updateFileCollection(id, filePath);
+                    break;
+                case "remove":
+                    this.remove(id);
+                    break;
+                default:
+                    throw new Error(`Unknown event '${event}' has occurred.`);
+            }
+        };
+    };
 }
 
 export default new Watcher();
