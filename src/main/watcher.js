@@ -5,12 +5,15 @@ import { promisify } from "util";
 
 const promisifyReadFile = promisify(readFile);
 
-export default class Watcher {
+class Watcher {
 
-    constructor(mainWindow) {
-        this._mainWindow = mainWindow;
+    constructor() {
         this._watchers = [];
         this._files = []
+    }
+
+    initialize(mainWindow) {
+        this._mainWindow = mainWindow;
     }
 
     getWatchedFiles() {
@@ -21,19 +24,17 @@ export default class Watcher {
         return this.getWatchedFiles().find(file => file[key] === value);
     }
 
-    add(name, path) {
-        if (name && path) {
-            const existingInstance = this.getFileByKeyValue("path", path);
-            if (existingInstance) {
-                this._mainWindow.webContents.send("file:watching", existingInstance.id)
-            } else {
-                const id = uniqid();
-                this._watchers.push({
-                    id,
-                    watcher: watch(path, {}, this.eventHandler.bind(this))
-                });
-                this.addFileToCollection(id, path, name);
-            }
+    add(name = "", path = "") {
+        const existingInstance = this.getFileByKeyValue("path", path);
+        if (existingInstance) {
+            this._mainWindow.webContents.send("file:watching", existingInstance.id)
+        } else {
+            const id = uniqid();
+            this._watchers.push({
+                id,
+                watcher: watch(path, {}, this.eventHandler.bind(this))
+            });
+            this.addFileToCollection(id, path, name);
         }
     }
 
@@ -62,7 +63,7 @@ export default class Watcher {
             id,
             name,
             path,
-            content: await this.retrieveFileContents(path),
+            content: await this.retrieveFileContents(path)
         };
         this._files.push(file);
         this._mainWindow.webContents.send("file:watching", file);
@@ -70,12 +71,12 @@ export default class Watcher {
 
     async updateFileCollection(path) {
         try {
-            let file;
-            const fileContent = await this.retrieveFileContents(path);
+            let file = null;
+            const content = await this.retrieveFileContents(path);
             this._files = this._files.map((f) => {
                 if (f.path === path) {
-                    f.content = fileContent;
                     file = f;
+                    return { ...f, content };
                 }
                 return f;
             });
@@ -107,3 +108,5 @@ export default class Watcher {
         return await promisifyReadFile(path, "utf-8");
     }
 }
+
+export default new Watcher();

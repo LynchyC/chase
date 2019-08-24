@@ -1,15 +1,13 @@
 import { app, BrowserWindow, dialog, ipcMain, Menu, shell } from "electron";
 import { basename, join } from "path";
 import { format } from "url";
-import Watcher from "main/watcher";
+import watcher from "main/watcher";
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
 let mainWindow;
-let watcher;
 
 function createWindow() {
-    // Create the browser window.
     mainWindow = new BrowserWindow({
         minHeight: 600,
         minWidth: 725,
@@ -19,19 +17,14 @@ function createWindow() {
         }
     });
 
-    watcher = new Watcher(mainWindow);
+    watcher.initialize(mainWindow);
+    const url = isDevelopment ? "http://localhost:8080" : format({
+        pathname: join(__dirname, "index.html"),
+        protocol: "file",
+        slashes: true
+    });
 
-    // and load the index.html of the app.
-    if (isDevelopment) {
-        mainWindow.loadURL("http://localhost:8080");
-    } else {
-        mainWindow.loadURL(format({
-            pathname: join(__dirname, "index.html"),
-            protocol: "file",
-            slashes: true,
-        }));
-    }
-
+    mainWindow.loadURL(url);
     mainWindow.on("closed", () => {
         mainWindow = null;
     });
