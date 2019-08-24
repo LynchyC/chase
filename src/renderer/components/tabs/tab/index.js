@@ -1,8 +1,8 @@
 import React from "react";
+
 import { bool, func, number, string } from "prop-types";
 import CloseIcon from "images/close.png";
-
-import { Button, Heading, Icon, Item } from "renderer/components/tabs/style";
+import { Button, Heading, Icon, Item } from "./style";
 
 const Tab = (props) => {
     const { heading, isActive, onClickTab, onClickIcon, tabIndex, title } = props;

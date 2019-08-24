@@ -10,7 +10,7 @@ module.exports = (env, argv) => {
     return merge(baseConfig, {
         target: "electron-renderer",
         entry: {
-            app: "./src/renderer/index.jsx"
+            app: "./src/renderer/index.js"
         },
         devtool: isDev ? "source-map" : "",
         module: {
