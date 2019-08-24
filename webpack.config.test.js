@@ -1,43 +1,36 @@
 const baseConfig = require("./webpack.config.base");
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require("clean-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const merge = require("webpack-merge");
 
 module.exports = merge(baseConfig, {
 
-    target: 'electron-main',
+    target: "electron-main",
     entry: {
-        app: './src/index.jsx',
-        main: './src/main.js'
+        app: "./src/renderer/index.jsx",
+        main: "./src/main/main.js"
     },
 
     module: {
         rules: [{
-            test: /\.css$/,
-            use: [{
-                loader: 'style-loader'
-            }, {
-                loader: 'css-loader'
-            }]
-        }, {
             test: /\.(jpg|png|gif|svg|ttf|eot|woff|woff2)$/,
             use: {
-                loader: 'file-loader',
+                loader: "file-loader",
                 options: {
-                    name: '[path][name].[ext]'
+                    name: "[path][name].[ext]"
                 }
             }
         }, {
             test: /\.html$/,
-            use: 'raw-loader'
+            use: "raw-loader"
         }]
     },
 
     plugins: [
-        new CleanWebpackPlugin('dist/*'),
+        new CleanWebpackPlugin("dist/*"),
         new HtmlWebpackPlugin({
-            template: './src/index.html',
-            filename: 'index.html'
+            template: "./src/renderer/index.html",
+            filename: "index.html"
         })
     ]
 });

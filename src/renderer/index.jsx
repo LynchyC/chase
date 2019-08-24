@@ -1,12 +1,12 @@
 import React, { Fragment } from "react";
-import ReactDOM from "react-dom";
+import { render } from "react-dom";
 import { Provider } from "react-redux";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
-import GlobalStyle from "./style";
-import FileSelection from "components/FileSelection";
-import LogView from "components/LogView";
-import configureStore from "store.js";
-import IPCManager from "utils/ipcManager";
+import GlobalStyle from "renderer/style";
+import FileSelection from "renderer/components/FileSelection";
+import LogView from "renderer/components/LogView";
+import configureStore from "renderer/store";
+import IPCManager from "renderer/utils/ipcManager";
 
 const store = configureStore();
 
@@ -26,4 +26,4 @@ const router = (
 
 IPCManager.registerListeners(store);
 
-ReactDOM.render(router, document.getElementById("app"));
+render(router, document.getElementById("app"));
