@@ -87,9 +87,11 @@ app.on("ready", () => {
 });
 
 app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") {
-        app.quit();
-    }
+    app.quit();
+});
+
+app.on("quit", () => {
+    watcher.end();
 });
 
 app.on("activate", () => {
@@ -107,6 +109,6 @@ ipcMain.on("file:removed", (e, id) => {
 });
 
 ipcMain.on("file:open-in-explorer", (e, id) => {
-    const { path } = watcher.getFileByKeyValue("id", id);
+    const { path } = watcher.getFile(id);
     shell.showItemInFolder(path);
 });
