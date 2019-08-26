@@ -6,84 +6,89 @@ import { promisify } from "util";
 const promisifyReadFile = promisify(readFile);
 
 class Watcher {
-    _watchers = {};
+    _watcher = null;
     _files = {};
+
+    _eventHandler = (event, path) => {
+        const { id } = this._getByPath(path);
+        switch (event) {
+            case "update":
+                this.update(id, path);
+                break;
+            case "remove":
+                this.remove(id, path);
+                break;
+            default:
+                throw new Error(`Unknown event '${event}' has occurred.`);
+        }
+    };
+
+    _getByPath(path) {
+        return Object.values(this._files)
+            .find(file => file.path === path) || {};
+    }
+
+    async _getFileContent(path) {
+        return promisifyReadFile(path, "utf-8");
+    }
+
+    _getPaths() {
+        return Object.values(this._files).map(({ path }) => path);
+    }
+
+    _set(paths = []) {
+        if (this._watcher) {
+            this._watcher.close();
+        }
+        this._watcher = paths.length ? watch(paths, {}, this._eventHandler) : null;
+    }
 
     initialize(mainWindow) {
         this._mainWindow = mainWindow;
     }
 
-    getFileByKeyValue(key, value) {
-        return Object.values(this._files).find(file => {
-            return file[key] === value;
-        }) || {};
+    getFile(id) {
+        return this._files[id];
     }
 
-    add(name = "", path = "") {
-        const { id } = this.getFileByKeyValue("path", path);
+    async add(name = "", path = "") {
+        const { id } = this._getByPath(path);
         if (id) {
             this._mainWindow.webContents.send("file:watching", id)
         } else {
-            const id = uniqid();
-            this._watchers[id] = {
-                id,
-                watcher: watch(path, {}, this.eventHandler(id))
+            const paths = this._getPaths();
+            const file = {
+                id: uniqid(),
+                name,
+                path,
+                content: await this._getFileContent(path)
             };
-            this.addFileToCollection(id, path, name);
+            this._set([...paths, path]);
+            this._files[file.id] = file;
+            this._mainWindow.webContents.send("file:watching", file);
         }
     }
 
-    remove(id) {
-        this._watchers[id].watcher.close();
-        delete this._watchers[id];
-        delete this._files[id];
-        this._mainWindow.webContents.send("log:unloaded", id);
-    }
-
-    end() {
-        Object.values(this._watchers).forEach(({ watcher }) => watcher.close());
-        this._watchers = {};
-        this._files = {};
-    }
-
-    async addFileToCollection(id, path, name) {
-        const file = {
-            id,
-            name,
-            path,
-            content: await this.retrieveFileContents(path)
-        };
-        this._files[id] = file;
-        this._mainWindow.webContents.send("file:watching", file);
-    }
-
-    async updateFileCollection(id, path) {
+    async update(id, path) {
         try {
-            this._files[id].content = await this.retrieveFileContents(path);
+            this._files[id].content = await this._getFileContent(path);
             this._mainWindow.webContents.send("log:changed", this._files[id]);
         } catch (error) {
             throw error;
         }
     }
 
-    async retrieveFileContents(path) {
-        return promisifyReadFile(path, "utf-8");
+    remove(id, path) {
+        const paths = [...this._getPaths()].filter(p => p !== path);
+        this._set(paths);
+        delete this._files[id];
+        this._mainWindow.webContents.send("log:unloaded", id);
     }
 
-    eventHandler = (id) => {
-        return (event, filePath) => {
-            switch (event) {
-                case "update":
-                    this.updateFileCollection(id, filePath);
-                    break;
-                case "remove":
-                    this.remove(id);
-                    break;
-                default:
-                    throw new Error(`Unknown event '${event}' has occurred.`);
-            }
-        };
-    };
+    end() {
+        this._watcher = null;
+        this._files = {};
+    }
 }
 
 export default new Watcher();
