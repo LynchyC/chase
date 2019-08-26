@@ -16,7 +16,7 @@ class Watcher {
                 this.update(id, path);
                 break;
             case "remove":
-                this.remove(id, path);
+                this.remove(id);
                 break;
             default:
                 throw new Error(`Unknown event '${event}' has occurred.`);
@@ -78,7 +78,8 @@ class Watcher {
         }
     }
 
-    remove(id, path) {
+    remove(id) {
+        const { path } = this.getFile(id);
         const paths = [...this._getPaths()].filter(p => p !== path);
         this._set(paths);
         delete this._files[id];
