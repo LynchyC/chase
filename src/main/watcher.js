@@ -2,6 +2,7 @@ import { readFile } from "fs";
 import watch from "node-watch";
 import uniqid from "uniqid";
 import { promisify } from "util";
+import log from "electron-log";
 
 const promisifyReadFile = promisify(readFile);
 
@@ -37,10 +38,15 @@ class Watcher {
     }
 
     _set(paths = []) {
-        if (this._watcher) {
-            this._watcher.close();
+        try {
+            if (this._watcher) {
+                this._watcher.close();
+            }
+            this._watcher = paths.length ? watch(paths, {}, this._eventHandler) : null;
+        } catch (error) {
+            log.error(error.message);
         }
-        this._watcher = paths.length ? watch(paths, {}, this._eventHandler) : null;
+
     }
 
     initialize(mainWindow) {
@@ -74,7 +80,7 @@ class Watcher {
             this._files[id].content = await this._getFileContent(path);
             this._mainWindow.webContents.send("log:changed", this._files[id]);
         } catch (error) {
-            throw error;
+            log.error(error);
         }
     }
 
