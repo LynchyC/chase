@@ -37,16 +37,19 @@ class Watcher {
         return Object.values(this._files).map(({ path }) => path);
     }
 
-    _set(paths = []) {
+    _set(paths = [], removing = false) {
         try {
             if (this._watcher) {
                 this._watcher.close();
             }
             this._watcher = paths.length ? watch(paths, {}, this._eventHandler) : null;
-        } catch (error) {
-            log.error(error.message);
+        } catch ({ message }) {
+            const index = message.indexOf("does not exist");
+            if (index > -1 && removing) {
+                const path = message.substring(0, index);
+                this._set(paths.filter((p) => p !== path), true);
+            }
         }
-
     }
 
     initialize(mainWindow) {
@@ -87,7 +90,7 @@ class Watcher {
     remove(id) {
         const { path } = this.getFile(id);
         const paths = [...this._getPaths()].filter(p => p !== path);
-        this._set(paths);
+        this._set(paths, true);
         delete this._files[id];
         this._mainWindow.webContents.send("log:unloaded", id);
     }
