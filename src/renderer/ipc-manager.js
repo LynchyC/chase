@@ -1,22 +1,21 @@
 import { ipcRenderer } from "electron";
-import { addFileSuccess, removeFileSuccess, selectFile } from "renderer/actions/watchlist";
+import { addFileSuccess, removeFileSuccess, selectFile } from "renderer/state/file/actions";
 
 export default class IpcManager {
 
-    static registerListeners(store) {
+    static registerListeners({ dispatch, getState }) {
         ipcRenderer.on("file:watching", (event, file) => {
             if (typeof file === "string") {
-                const { watchlist } = store.getState();
-                const { allFiles } = watchlist;
-                const index = allFiles.indexOf(file);
-                store.dispatch(selectFile(index));
+                const { file: { allIds } } = getState();
+                const index = allIds.indexOf(file);
+                dispatch(selectFile(index));
             } else {
-                store.dispatch(addFileSuccess(file));
+                dispatch(addFileSuccess(file));
             }
         });
 
         ipcRenderer.on("log:unloaded", (event, deletedId) => {
-            store.dispatch(removeFileSuccess(deletedId));
+            dispatch(removeFileSuccess(deletedId));
         });
     }
 

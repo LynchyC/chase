@@ -5,38 +5,21 @@ import { Button, ButtonTray, Container, Label, Text } from "renderer/components/
 import { Tab, Tabs } from "renderer/components/tabs";
 import IpcManager from "renderer/ipc-manager";
 
+// TODO: Re-implement saving scrollTop
 export default class LogView extends Component {
-    selectedFile = createRef();
+    selected = createRef();
 
     componentDidMount() {
         ipcRenderer.on("log:changed", this.handleFileListener);
-        if (this.props.watchlist.allFiles.length) {
-            this.setTabScrollTop();
-        }
+        this.setScroll();
     }
 
-    getSnapshotBeforeUpdate() {
-        return this.getScrollTop();
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        const { history, setScroll, watchlist } = this.props;
-        const { allFiles, files } = watchlist;
-        const { allFiles: prevFiles, selectedFile: prevSelectedFile } = prevProps.watchlist;
-        if (!watchlist.allFiles.length) {
+    componentDidUpdate() {
+        const { history, file: { allIds } } = this.props;
+        if (!allIds.length) {
             history.push("/");
-        }
-
-        const oldFile = files[allFiles[prevSelectedFile]] || {};
-        if (allFiles.length > 0
-            && allFiles.length === prevFiles.length
-            && oldFile.scrollTop != null
-            && oldFile.scrollTop !== snapshot) {
-            setScroll(oldFile.id, snapshot);
-        }
-
-        if (this.selectedFile.current) {
-            this.setTabScrollTop();
+        } else {
+            this.setScroll();
         }
     }
 
@@ -44,33 +27,22 @@ export default class LogView extends Component {
         ipcRenderer.removeListener("log:changed", this.handleFileListener);
     }
 
-    setTabScrollTop() {
-        const { current } = this.selectedFile;
-        const { watchlist } = this.props;
-        const { allFiles, files, selectedFile } = watchlist;
-        const { follow, scrollTop } = files[allFiles[selectedFile]];
-
-        current.scrollTop = follow ? current.scrollHeight : scrollTop;
-    }
-
-    handleFileListener = (event, fileWithContent) => {
-        this.props.updateFile(fileWithContent);
+    handleFileListener = (event, fileContent) => {
+        this.props.updateFile(fileContent);
     };
 
-    getFile = (id) => {
-        const { watchlist } = this.props;
-        return watchlist.files[id];
+    setScroll = () => {
+        const { file: { allIds, byId, selected } } = this.props;
+        const id = allIds[selected];
+        if (byId[id].follow) {
+            const { current } = this.selected;
+            current.scrollTop = current.scrollHeight;
+        }
     };
 
-    getScrollTop() {
-        const { current } = this.selectedFile;
-        return (current ? current.scrollTop : null);
-    }
-
-    onChangeFollowFile = (id) => {
+    onChangeFollow = (id) => {
         return () => {
-            const scrollTop = this.getScrollTop();
-            this.props.followFile(id, scrollTop);
+            this.props.followFile(id);
         };
     };
 
@@ -83,23 +55,20 @@ export default class LogView extends Component {
 
     onClickTab = (index) => {
         return () => {
-            const { allFiles, selectedFile } = this.props.watchlist;
-            const scrollTop = this.getScrollTop();
-            this.props.setScroll(allFiles[selectedFile], scrollTop);
             this.props.selectFile(index);
         };
     };
 
-    onClickOpenFile = (id) => {
+    onClickOpen = (id) => {
         return () => {
             IpcManager.openFileInExplorer(id);
         };
     };
 
-    renderFiles = (id, index) => {
-        const { watchlist: { selectedFile } } = this.props;
-        const active = (selectedFile === index);
-        const { content, follow, name, path } = this.getFile(id);
+    renderFile = (id, index) => {
+        const { file: { byId, selected } } = this.props;
+        const active = (selected === index);
+        const { content, follow, name, path } = byId[id];
         return <Tab key={id}
                     heading={name}
                     onClickTab={this.onClickTab(index)}
@@ -107,16 +76,16 @@ export default class LogView extends Component {
                     tabIndex={index}
                     title={path}>
             <Text value={content}
-                  ref={active ? this.selectedFile : null}
+                  ref={active ? this.selected : null}
                   readOnly/>
             <ButtonTray>
                 <Label>
                     Follow
                     <input type="checkbox"
-                           onChange={this.onChangeFollowFile(id)}
+                           onChange={this.onChangeFollow(id)}
                            checked={follow}/>
                 </Label>
-                <Button onClick={this.onClickOpenFile(id)}>
+                <Button onClick={this.onClickOpen(id)}>
                     Open in Explorer
                 </Button>
             </ButtonTray>
@@ -124,14 +93,11 @@ export default class LogView extends Component {
     };
 
     render() {
-        const { watchlist } = this.props;
-        const { allFiles, selectedFile } = watchlist;
+        const { file: { allIds, selected } } = this.props;
         return <Container>
-            {
-                allFiles.length > 0 && <Tabs activeTabIndex={selectedFile}>
-                    {allFiles.map(this.renderFiles)}
-                </Tabs>
-            }
+            {allIds.length > 0 && <Tabs activeTabIndex={selected}>
+                {allIds.map(this.renderFile)}
+            </Tabs>}
         </Container>
     };
 }

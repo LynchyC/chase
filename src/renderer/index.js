@@ -5,7 +5,7 @@ import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import GlobalStyle from "renderer/style";
 import FileSelection from "renderer/components/file-selection";
 import LogView from "renderer/components/log-view";
-import configureStore from "renderer/store";
+import configureStore from "renderer/state";
 import IpcManager from "renderer/ipc-manager";
 
 const store = configureStore();

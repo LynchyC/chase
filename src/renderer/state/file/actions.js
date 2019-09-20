@@ -1,5 +1,5 @@
 import { ipcRenderer } from "electron";
-import { ADD_FILE, FOLLOW_FILE, REMOVE_FILE, SELECT_FILE, SET_SCROLL, UPDATE_FILE } from "renderer/constants";
+import { ADD_FILE, FOLLOW_FILE, REMOVE_FILE, SELECT_FILE, UPDATE_FILE } from "renderer/constants";
 
 export const addFile = (name, path) => () => {
     ipcRenderer.send("file:added", name, path);
@@ -7,8 +7,7 @@ export const addFile = (name, path) => () => {
 
 export const addFileSuccess = (file) => ({ type: ADD_FILE, file });
 
-export const followFile = (id, scrollTop) => (dispatch) => {
-    dispatch(setScroll(id, scrollTop));
+export const followFile = (id) => (dispatch) => {
     dispatch(({ type: FOLLOW_FILE, id }));
 };
 
@@ -18,8 +17,6 @@ export const removeFile = (id) => () => {
 
 export const removeFileSuccess = (id) => ({ type: REMOVE_FILE, id });
 
-export const selectFile = (index) => (({ type: SELECT_FILE, index }));
-
-export const setScroll = (id, scrollTop) => ({ type: SET_SCROLL, id, scrollTop });
+export const selectFile = (selected) => (({ type: SELECT_FILE, selected }));
 
 export const updateFile = (file) => ({ type: UPDATE_FILE, file });
