@@ -6,8 +6,8 @@ import { Container, DropzoneHeader, Header, HeaderText, StyledDropzone } from ".
 export default class FileSelection extends Component {
 
     componentDidUpdate() {
-        const { history, watchlist } = this.props;
-        if (watchlist.allFiles.length) {
+        const { history, file } = this.props;
+        if (file.allIds.length) {
             history.push("/logs");
         }
     }
