@@ -1,13 +1,22 @@
 import React, { Component } from "react";
 import Dropzone from "react-dropzone";
+import { array, func, shape } from "prop-types";
 
 import { Container, DropzoneHeader, Header, HeaderText, StyledDropzone } from "./style";
 
 export default class FileSelection extends Component {
 
+    static propTypes = {
+        addFile: func.isRequired,
+        files: array.isRequired,
+        history: shape({
+            push: func.isRequired
+        }).isRequired
+    };
+
     componentDidUpdate() {
-        const { history, file } = this.props;
-        if (file.allIds.length) {
+        const { files, history } = this.props;
+        if (files.length) {
             history.push("/logs");
         }
     }
