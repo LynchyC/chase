@@ -1,5 +1,6 @@
 import { ipcRenderer } from "electron";
 import React, { Component, createRef } from "react";
+import { array, func, number, shape } from "prop-types";
 
 import { Button, ButtonTray, Container, Label, Text } from "renderer/components/log-view/style";
 import { Tab, Tabs } from "renderer/components/tabs";
@@ -9,14 +10,26 @@ import IpcManager from "renderer/ipc-manager";
 export default class LogView extends Component {
     selected = createRef();
 
+    static propTypes = {
+        files: array.isRequired,
+        followFile: func.isRequired,
+        history: shape({
+            push: func.isRequired
+        }).isRequired,
+        removeFile: func.isRequired,
+        selected: number.isRequired,
+        selectFile: func.isRequired,
+        updateFile: func.isRequired
+    };
+
     componentDidMount() {
         ipcRenderer.on("log:changed", this.handleFileListener);
         this.setScroll();
     }
 
     componentDidUpdate() {
-        const { history, file: { allIds } } = this.props;
-        if (!allIds.length) {
+        const { files, history } = this.props;
+        if (!files.length) {
             history.push("/");
         } else {
             this.setScroll();
@@ -32,9 +45,9 @@ export default class LogView extends Component {
     };
 
     setScroll = () => {
-        const { file: { allIds, byId, selected } } = this.props;
-        const id = allIds[selected];
-        if (byId[id].follow) {
+        const { files, selected } = this.props;
+        const { follow } = files[selected];
+        if (follow) {
             const { current } = this.selected;
             current.scrollTop = current.scrollHeight;
         }
@@ -65,10 +78,9 @@ export default class LogView extends Component {
         };
     };
 
-    renderFile = (id, index) => {
-        const { file: { byId, selected } } = this.props;
+    renderFile = ({ content, follow, id, name, path }, index) => {
+        const { selected } = this.props;
         const active = (selected === index);
-        const { content, follow, name, path } = byId[id];
         return <Tab key={id}
                     heading={name}
                     onClickTab={this.onClickTab(index)}
@@ -93,10 +105,10 @@ export default class LogView extends Component {
     };
 
     render() {
-        const { file: { allIds, selected } } = this.props;
+        const { files, selected } = this.props;
         return <Container>
-            {allIds.length > 0 && <Tabs activeTabIndex={selected}>
-                {allIds.map(this.renderFile)}
+            {files.length > 0 && <Tabs activeTabIndex={selected}>
+                {files.map(this.renderFile)}
             </Tabs>}
         </Container>
     };

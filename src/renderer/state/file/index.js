@@ -1,23 +1,18 @@
 import { ADD_FILE, FOLLOW_FILE, REMOVE_FILE, SELECT_FILE, UPDATE_FILE } from "renderer/constants";
 
 const defaultState = {
-    allIds: [],
     byId: {},
     selected: null
 };
 
 const removeFile = (state, fileId) => {
-    const { allIds, byId: { [fileId]: toDelete, ...files } } = state;
+    const { byId: { [fileId]: toDelete, ...files } } = state;
+    const ids = Object.keys(state.byId);
     let selected = state.selected;
-    if (allIds.length > 1 && selected > 0 && selected === allIds.length - 1) {
+    if (ids.length > 1 && selected > 0 && selected === ids.length - 1) {
         selected = state.selected - 1;
     }
-    return {
-        ...state,
-        allIds: allIds.filter(id => id !== fileId),
-        byId: files,
-        selected
-    };
+    return { ...state, byId: files, selected };
 };
 
 export default (state = defaultState, action) => {
@@ -27,10 +22,6 @@ export default (state = defaultState, action) => {
         case ADD_FILE:
             return {
                 ...state,
-                allIds: [
-                    ...state.allIds,
-                    file.id
-                ],
                 byId: {
                     ...state.byId,
                     [file.id]: {
@@ -39,7 +30,7 @@ export default (state = defaultState, action) => {
                         scrollTop: null
                     }
                 },
-                selected: state.allIds.length
+                selected: Object.keys(state.byId).length
             };
         case FOLLOW_FILE:
             return {
