@@ -6,7 +6,6 @@ import { Button, ButtonTray, Container, Label, Text } from "renderer/views/log-v
 import { Tab, Tabs } from "renderer/views/tabs";
 import IpcManager from "renderer/ipc-manager";
 
-// TODO: Re-implement saving scrollTop
 export default class LogView extends Component {
     selected = createRef();
 
@@ -19,6 +18,7 @@ export default class LogView extends Component {
         removeFile: func.isRequired,
         selected: number.isRequired,
         selectFile: func.isRequired,
+        setScroll: func.isRequired,
         updateFile: func.isRequired
     };
 
@@ -44,18 +44,26 @@ export default class LogView extends Component {
         this.props.updateFile(fileContent);
     };
 
+    getScroll = () => {
+        const { scrollHeight, scrollTop } = this.selected.current;
+        return { scrollHeight, scrollTop };
+    };
+
     setScroll = () => {
         const { files, selected } = this.props;
-        const { follow } = files[selected];
-        if (follow) {
-            const { current } = this.selected;
-            current.scrollTop = current.scrollHeight;
-        }
+        const { follow, scrollTop } = files[selected];
+        const { scrollHeight } = this.getScroll();
+        this.selected.current.scrollTop = follow ? scrollHeight : scrollTop;
+    };
+
+    toggleFollow = (id) => {
+        const { scrollHeight } = this.getScroll();
+        this.props.followFile(id, scrollHeight);
     };
 
     onChangeFollow = (id) => {
         return () => {
-            this.props.followFile(id);
+            this.toggleFollow(id);
         };
     };
 
@@ -68,7 +76,13 @@ export default class LogView extends Component {
 
     onClickTab = (index) => {
         return () => {
-            this.props.selectFile(index);
+            const { files, selected, selectFile, setScroll } = this.props;
+            const { id, follow } = files[selected];
+            if (!follow) {
+                const { scrollTop } = this.getScroll();
+                setScroll(id, scrollTop);
+            }
+            selectFile(index);
         };
     };
 
