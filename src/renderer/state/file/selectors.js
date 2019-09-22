@@ -4,10 +4,6 @@ export const file = ({ file }) => {
     return file;
 };
 
-export const files = createSelector(file, ({ byId }) => {
-    return Object.values(byId);
-});
-
-export const selected = createSelector(file, ({ selected }) => {
-    return selected;
+export const files = createSelector(file, (file) => {
+    return Object.values(file);
 });

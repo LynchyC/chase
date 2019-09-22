@@ -2,9 +2,11 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { createStructuredSelector } from "reselect";
 
-import { followFile, removeFile, selectFile, updateFile } from "renderer/state/file/actions";
+import { followFile, removeFile, updateFile } from "renderer/state/file/actions";
+import selectFile from "renderer/views/log-view/actions";
 import LogView from "./component";
-import { files, selected } from "renderer/state/file/selectors";
+import { files } from "renderer/state/file/selectors";
+import selected from "renderer/views/log-view/selectors";
 
 export default withRouter(
     connect(createStructuredSelector({
