@@ -2,7 +2,7 @@ import { ipcRenderer } from "electron";
 import React, { Component, createRef } from "react";
 import { array, func, number, shape } from "prop-types";
 
-import { Button, ButtonTray, Container, Label, Text } from "renderer/views/log-view/style";
+import { Button, ButtonTray, Container, Label, Text } from "renderer/views/log/style";
 import { Tab, Tabs } from "renderer/views/tabs";
 import IpcManager from "renderer/ipc-manager";
 
