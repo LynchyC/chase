@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { arrayOf, func, number, oneOf, oneOfType, shape, string } from "prop-types";
 
 import Tab from "./tab/index";
-import { Container, TabsList, TabBody } from "renderer/components/tabs/style";
+import { Container, TabsList, TabBody } from "renderer/views/tabs/style";
 
 const child = shape({
     type: oneOf(([Tab])).isRequired,
