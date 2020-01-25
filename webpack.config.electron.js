@@ -1,5 +1,5 @@
 const baseConfig = require("./webpack.config.base");
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const merge = require("webpack-merge");
 
 module.exports = (env, argv) => {
@@ -11,7 +11,7 @@ module.exports = (env, argv) => {
         },
         devtool: isDev ? "source-map" : "",
         plugins: [
-            new CleanWebpackPlugin('dist/main*')
+            new CleanWebpackPlugin()
         ]
     });
 };

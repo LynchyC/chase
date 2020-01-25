@@ -1,5 +1,5 @@
 const baseConfig = require("./webpack.config.base");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const merge = require("webpack-merge");
 
@@ -27,7 +27,7 @@ module.exports = merge(baseConfig, {
     },
 
     plugins: [
-        new CleanWebpackPlugin("dist/*"),
+        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: "./src/renderer/index.html",
             filename: "index.html"
