@@ -8,20 +8,19 @@ export default (window, isDev = false) => {
         label: "File",
         submenu: [{
             label: "Open File",
-            click: () => {
-                dialog.showOpenDialog(window, {
+            click: async () => {
+                const { filePaths = [] } = await dialog.showOpenDialog(window, {
                     filters: [{
                         name: "Files",
                         filters: ["doc", "docx", "html", "htm", "odt", "pdf", "xls", "xlsx", "ods", "ppt", "pptx", "txt", "log"]
                     }],
                     title: "Open File",
                     properties: ["openFile"]
-                }, (files = []) => {
-                    if (files.length) {
-                        const [file] = files;
-                        watcher.add(basename(file), file);
-                    }
                 });
+                if (filePaths.length) {
+                    const [file] = filePaths;
+                    watcher.add(basename(file), file);
+                }
             },
             accelerator: "CmdOrCtrl+O"
         }, {
