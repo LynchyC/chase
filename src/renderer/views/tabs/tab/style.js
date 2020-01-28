@@ -1,11 +1,9 @@
 import styled, { css } from "styled-components";
+import Close from "./close";
 
-export const Icon = styled.img`
+export const Icon = styled(Close)`
     border: 0;
     display: inline-block;
-    height: 1rem;
-    line-height: 1.7rem;
-    width: 1rem;
     
     ${({ isActive }) => !isActive && css`
         display: none;                

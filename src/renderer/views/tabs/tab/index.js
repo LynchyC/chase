@@ -1,20 +1,17 @@
 import React from "react";
 
 import { bool, func, number, string } from "prop-types";
-import CloseIcon from "images/close.png";
 import { Button, Heading, Icon, Item } from "./style";
 
-const Tab = (props) => {
-    const { heading, isActive, onClickTab, onClickIcon, tabIndex, title } = props;
+const Tab = ({ heading, isActive, onClickTab, onClickIcon, tabIndex, title }) => {
     return <Item isActive={isActive}
-                 onClick={(evt) => onClickTab(evt, tabIndex)}
-                 title={title}>
+        onClick={onClickTab}
+        title={title}>
         <Heading>{heading}</Heading>
-        <Button onClick={() => onClickIcon(tabIndex)}>
-            <Icon src={CloseIcon}
-                  alt="Close Tab"
-                  isActive={isActive}
-                  onClick={onClickIcon}/>
+        <Button onClick={onClickIcon}>
+            <Icon
+                isActive={isActive}
+                onClick={onClickIcon} />
         </Button>
     </Item>
 };
