@@ -95,19 +95,23 @@ export default class LogView extends Component {
     renderFile = ({ content, follow, id, name, path }, index) => {
         const { selected } = this.props;
         const active = (selected === index);
-        return <Tab key={id}
+        return <Tab
+            key={id}
             heading={name}
-            onClickTab={this.onClickTab(id)}
+            onClickTab={this.onClickTab(index)}
             onClickIcon={this.onClickIcon(id)}
             tabIndex={index}
-            title={path}>
-            <Text value={content}
+            title={path}
+        >
+            <Text
+                value={content}
                 ref={active ? this.selected : null}
                 readOnly />
             <ButtonTray>
                 <Label>
                     Follow
-                    <input type="checkbox"
+                    <input
+                        type="checkbox"
                         onChange={this.onChangeFollow(id)}
                         checked={follow} />
                 </Label>
