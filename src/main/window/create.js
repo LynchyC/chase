@@ -2,7 +2,7 @@ import { BrowserWindow } from "electron";
 import { format } from "url";
 import { join } from "path";
 
-import watcher from "main/watcher";
+import watcher from "../watcher";
 
 export default (isDev = false) => {
     let window = new BrowserWindow({

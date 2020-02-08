@@ -2,9 +2,9 @@ import { ipcRenderer } from "electron";
 import React, { Component, createRef } from "react";
 import { array, func, number, shape } from "prop-types";
 
-import { Button, ButtonTray, Container, Label, Text } from "renderer/views/log/style";
-import { Tab, Tabs } from "renderer/views/tabs";
-import IpcManager from "renderer/ipc-manager";
+import { Button, ButtonTray, Container, Label, Text } from "./style";
+import { Tab, Tabs } from "../tabs";
+import IpcManager from "../../ipc-manager";
 
 export default class LogView extends Component {
     selected = createRef();

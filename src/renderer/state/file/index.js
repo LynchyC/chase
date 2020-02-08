@@ -1,4 +1,4 @@
-import { ADD_FILE, FOLLOW_FILE, REMOVE_FILE, SET_SCROLL, UPDATE_FILE } from "renderer/constants";
+import { ADD_FILE, FOLLOW_FILE, REMOVE_FILE, SET_SCROLL, UPDATE_FILE } from "../../constants";
 
 export default (state = {}, action) => {
     const { file, id, scrollTop, type } = action;

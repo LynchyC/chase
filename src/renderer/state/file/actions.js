@@ -1,5 +1,5 @@
 import { ipcRenderer } from "electron";
-import { ADD_FILE, FOLLOW_FILE, REMOVE_FILE, SET_SCROLL, UPDATE_FILE } from "renderer/constants";
+import { ADD_FILE, FOLLOW_FILE, REMOVE_FILE, SET_SCROLL, UPDATE_FILE } from "../../constants";
 
 export const addFile = (name, path) => () => {
     ipcRenderer.send("file:added", name, path);

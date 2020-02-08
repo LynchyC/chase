@@ -1,4 +1,4 @@
-import { ADD_FILE, REMOVE_FILE } from "renderer/constants";
+import { ADD_FILE, REMOVE_FILE } from "../../constants";
 
 export default (state, { type }) => {
     switch (type) {

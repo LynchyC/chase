@@ -18,10 +18,6 @@ module.exports = {
     resolve: {
         extensions: [".jsx", ".js"],
         modules: [
-            path.join(__dirname, "src"),
-            path.join(__dirname, "src", "main"),
-            path.join(__dirname, "src", "renderer"),
-            path.join(__dirname, "resources"),
             "node_modules"
         ]
     },

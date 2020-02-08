@@ -1,7 +1,7 @@
 import { dialog, Menu } from "electron";
 import { basename } from "path";
 
-import watcher from "main/watcher";
+import watcher from "../watcher";
 
 export default (window, isDev = false) => {
     const template = [{
@@ -31,7 +31,7 @@ export default (window, isDev = false) => {
         label: "Developer",
         submenu: [{
             label: "Open Dev Tools",
-            click() {
+            click: () => {
                 if (window.webContents.isDevToolsOpened()) {
                     window.webContents.closeDevTools();
                 } else {
@@ -41,7 +41,7 @@ export default (window, isDev = false) => {
             accelerator: "CmdOrCtrl+Shift+F12"
         }, {
             label: "Force Reload",
-            click() {
+            click: () => {
                 window.reload();
             },
             accelerator: "CmdOrCtrl+Shift+R"

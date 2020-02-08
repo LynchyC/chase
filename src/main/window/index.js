@@ -1,8 +1,8 @@
 import { app } from "electron";
 
-import watcher from "main/watcher";
-import registerMenu from "main/window/menu";
-import create from "main/window/create";
+import watcher from "../watcher";
+import registerMenu from "./menu";
+import create from "./create";
 
 const isDev = process.env.NODE_ENV === "development";
 let window;

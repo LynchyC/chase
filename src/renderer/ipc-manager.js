@@ -1,7 +1,7 @@
 import { ipcRenderer } from "electron";
 
-import { addFileSuccess, removeFileSuccess } from "renderer/state/file/actions";
-import selectFile from "renderer/views/log/actions";
+import { addFileSuccess, removeFileSuccess } from "./state/file/actions";
+import selectFile from "./views/log/actions";
 
 export default class IpcManager {
 

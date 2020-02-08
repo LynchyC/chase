@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 
-import view from "renderer/views/selectors";
+import view from "../selectors";
 
 export default createSelector(view, ({ log }) => {
     return log;

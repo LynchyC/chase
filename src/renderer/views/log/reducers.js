@@ -1,4 +1,4 @@
-import { SELECT_FILE } from "renderer/constants";
+import { SELECT_FILE } from "../../constants";
 
 export default (state = 0, { selected, type }) => {
     if (type === SELECT_FILE) {

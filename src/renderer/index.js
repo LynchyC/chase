@@ -2,11 +2,11 @@ import React, { Fragment } from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
-import GlobalStyle from "renderer/style";
-import FileSelection from "renderer/views/file-selection";
-import LogView from "renderer/views/log";
-import configureStore from "renderer/state";
-import IpcManager from "renderer/ipc-manager";
+import GlobalStyle from "./style";
+import FileSelection from "./views/file-selection";
+import LogView from "./views/log";
+import configureStore from "./state";
+import IpcManager from "./ipc-manager";
 
 const store = configureStore();
 

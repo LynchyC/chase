@@ -1,6 +1,6 @@
 import { ipcMain, shell } from "electron";
 
-import watcher from "main/watcher";
+import watcher from "./watcher";
 
 const add = (e, name, path) => {
     watcher.add(name, path);
