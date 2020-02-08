@@ -3,7 +3,7 @@ import React, { Component, createRef } from "react";
 import { array, func, number, shape } from "prop-types";
 
 import { Button, ButtonTray, Container, Label, Text } from "./style";
-import { Tab, Tabs } from "../tabs";
+import { Tab, Tabs } from "../../components/tabs";
 import IpcManager from "../../ipc-manager";
 
 export default class LogView extends Component {
