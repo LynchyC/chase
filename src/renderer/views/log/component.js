@@ -100,7 +100,6 @@ export default class LogView extends Component {
             heading={name}
             onClickTab={this.onClickTab(index)}
             onClickIcon={this.onClickIcon(id)}
-            tabIndex={index}
             title={path}
         >
             <Text
@@ -125,7 +124,7 @@ export default class LogView extends Component {
     render() {
         const { files, selected } = this.props;
         return <Container>
-            {files.length > 0 && <Tabs activeTabIndex={selected}>
+            {files.length > 0 && <Tabs selected={selected}>
                 {files.map(this.renderFile)}
             </Tabs>}
         </Container>

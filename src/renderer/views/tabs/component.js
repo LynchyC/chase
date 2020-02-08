@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { arrayOf, func, number, oneOf, oneOfType, shape, string } from "prop-types";
 
 import Tab from "./tab/index";
@@ -10,47 +10,39 @@ const child = shape({
         heading: string.isRequired,
         onClickTab: func.isRequired,
         onClickIcon: func.isRequired,
-        tabIndex: number.isRequired,
         title: string.isRequired
     }).isRequired
 });
 
-export default class Tabs extends Component {
+// TODO: Add uncontrolled logic
+const Tabs = ({ children, selected }) => {
 
-    static propTypes = {
-        activeTabIndex: number.isRequired,
-        children: oneOfType([
-            child,
-            arrayOf(child)
-        ]).isRequired
+    const renderTab = ({ key, props }, index) => {
+        return <Tab {...props}
+            key={key}
+            isActive={index === selected}
+        />;
     };
 
-    renderTabs() {
-        return this.props.children.map(this.renderTab.bind(this));
-    }
+    const body = children?.[selected];
 
-    renderTab({ key, props }, index) {
-        return <Tab {...props}
-                    key={key}
-                    isActive={index === this.props.activeTabIndex}
-        />
-    }
+    return <Container>
+        <TabsList>
+            {children.map(renderTab)}
+        </TabsList>
+        <TabBody>
+            {body && body.props.children}
+        </TabBody>
+    </Container>;
 
-    renderActiveTab() {
-        const { activeTabIndex, children } = this.props;
-        if (children[activeTabIndex]) {
-            return children[activeTabIndex].props.children;
-        }
-    }
+}
 
-    render() {
-        return <Container>
-            <TabsList>
-                {this.renderTabs()}
-            </TabsList>
-            <TabBody>
-                {this.renderActiveTab()}
-            </TabBody>
-        </Container>
-    }
+Tabs.propTypes = {
+    children: oneOfType([
+        child,
+        arrayOf(child)
+    ]).isRequired,
+    selected: number.isRequired,
 };
+
+export default Tabs;

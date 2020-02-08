@@ -1,20 +1,18 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import Close from "./close";
 
 export const Icon = styled(Close)`
     border: 0;
-    display: inline-block;
-    
-    ${({ isActive }) => !isActive && css`
-        display: none;                
-    `}
+    display: ${({ isActive }) => {
+        return isActive ? "inline-block" : "none";
+    }};
 `;
 
 export const Item = styled.li`
-    background-color: transparent;
-    border: 1px solid transparent;
+    border-style: solid;
     border-top-left-radius: 0.25rem;
     border-top-right-radius: 0.25rem;
+    border-width: 1px;
     cursor: pointer;
     display: inline-block;
     flex: 0 0 auto;
@@ -23,18 +21,18 @@ export const Item = styled.li`
     padding: 0.4rem 0.4rem 0.2rem 0.4rem;
     position: relative;
     width: 7rem;
-    
-    ${({ isActive }) => isActive && css`
-        background-color: rgba(128,128,128, 0.2);    
-        border-top: 1px solid #808080;
-        border-right: 1px solid #808080;
-        border-left: 1px solid #808080;
-        border-bottom: 1px solid #A9A9A9;
-    `}
-    
     &:hover ${Icon} {
         display: inline-block;
     }
+    ${({ isActive }) => {
+        return `
+            background-color: ${isActive ? "rgba(128,128,128, 0.2)" : "transparent"};
+            border-bottom-color: ${isActive ? "#A9A9A9" : "transparent"};
+            border-left-color: ${isActive ? "#808080" : "transparent"};
+            border-right-color: ${isActive ? "#808080" : "transparent"};
+            border-top-color: ${isActive ? "#808080" : "transparent"};
+        `;
+    }}
 `;
 
 export const Button = styled.button`
