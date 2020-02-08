@@ -3,9 +3,9 @@ module.exports = {
         [
             "@babel/preset-env",
             {
-                debug: true,
-                corejs: "3",
-                useBuiltIns: "usage"
+                targets: {
+                    electron: "8.0.0"
+                }
             }
         ],
         "@babel/preset-react"
