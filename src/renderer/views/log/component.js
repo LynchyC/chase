@@ -7,6 +7,7 @@ import { Tab, Tabs } from "../../components/tabs";
 import IpcManager from "../../ipc-manager";
 
 export default class LogView extends Component {
+
     selected = createRef();
 
     static propTypes = {
@@ -28,11 +29,12 @@ export default class LogView extends Component {
     }
 
     componentDidUpdate() {
-        const { files, history } = this.props;
+        const { files, history, selected } = this.props;
+        const { follow, scrollTop } = files[selected] ?? {};
         if (!files.length) {
             history.push("/");
         } else {
-            this.setScroll();
+            this.setScroll(follow ? scrollTop : null);
         }
     }
 
@@ -49,21 +51,17 @@ export default class LogView extends Component {
         return { scrollHeight, scrollTop };
     };
 
-    setScroll = () => {
+    setScroll = (initial = null) => {
         const { files, selected } = this.props;
-        const { follow, scrollTop } = files[selected];
-        const { scrollHeight } = this.getScroll();
-        this.selected.current.scrollTop = follow ? scrollHeight : scrollTop;
-    };
-
-    toggleFollow = (id) => {
-        const { scrollHeight } = this.getScroll();
-        this.props.followFile(id, scrollHeight);
+        const { follow } = files[selected];
+        const { scrollHeight, scrollTop } = this.getScroll();
+        this.selected.current.scrollTop = follow ? scrollHeight : (initial ?? scrollTop);
     };
 
     onChangeFollow = (id) => {
         return () => {
-            this.toggleFollow(id);
+            const { scrollHeight } = this.getScroll();
+            this.props.followFile(id, scrollHeight);
         };
     };
 
@@ -103,6 +101,7 @@ export default class LogView extends Component {
             title={path}
         >
             <Text
+                element="textarea"
                 value={content}
                 ref={active ? this.selected : null}
                 readOnly />
@@ -128,5 +127,6 @@ export default class LogView extends Component {
                 {files.map(this.renderFile)}
             </Tabs>}
         </Container>
-    };
+    }
+
 }
