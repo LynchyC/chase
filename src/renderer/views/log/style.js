@@ -1,42 +1,46 @@
 import styled from "styled-components";
 
-export const Container = styled.div`
-    height: 100vh;
-    width: 100%;
+import View from "../../components/view";
+
+export const Container = styled(View)`
+    flex-grow: 1;
+    height: 100%;
+    padding: 1%;
 `;
 
-export const Button = styled.button`
+export const Button = styled(View)`
+    align-items: center;
     background-color: #C0C0C0;
     border: 2px solid #FFFFFF;
     border-radius: 3px;
     color: #FFFFFF;
     cursor: pointer;
-    font-weight: bold;
-    
+    justify-content: center;
+    padding: 5px;
     &:hover {
         text-decoration: underline;
     }
 `;
 
-export const ButtonTray = styled.div`
-    display: flex;
-    height: 2.5rem;
+export const ButtonTray = styled(View)`
+    align-items: center;
+    flex-direction: row;
+    height: 40px;
     justify-content: space-between;
+    margin-top: 2px;
 `;
 
-export const Label = styled.label`
-    align-self: center;
-    display: inline-block;
+export const Label = styled(View)`
+    flex-direction: row;
 `;
 
-export const Text = styled.textarea`
+export const Text = styled(View)`
     border: none;
     color: transparent;
-    height: calc(100% - 2.5rem);
+    flex-grow: 1;
     resize: none;
     text-shadow: 0 0 0 black;
     width: 100%;
-    
     &:focus {
         outline: none;
     }
