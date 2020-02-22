@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Dropzone from "react-dropzone";
 import { array, func, shape } from "prop-types";
 
-import { Container, DropzoneHeader, Header, HeaderText, StyledDropzone } from "./style";
+import { Area, Container, Text } from "./style";
 
 export default class FileSelection extends Component {
 
@@ -28,35 +28,26 @@ export default class FileSelection extends Component {
         }
     };
 
-    renderChildren({ getInputProps, getRootProps, isDragActive, isDragReject }) {
-        return (
-            <StyledDropzone {...getRootProps()} isActive={isDragActive}>
-                <input {...getInputProps()} />
-                <DropzoneHeader>
-                    {!isDragActive && !isDragReject && "Drop a file here to get started or click me!"}
-                    {isDragActive && !isDragReject && "This file is authorized"}
-                    {isDragActive && isDragReject && "Sorry, this file is not authorized ..."}
-                </DropzoneHeader>
-            </StyledDropzone>
-        );
+    renderChildren = ({ getInputProps, getRootProps, isDragActive, isDragReject }) => {
+        return <Area {...getRootProps()}>
+            <input {...getInputProps()} />
+            <Text>
+                {!isDragActive && !isDragReject && "Drop a file here to get started or click me!"}
+                {isDragActive && !isDragReject && "This file is authorized"}
+                {isDragActive && isDragReject && "Sorry, this file is not authorized ..."}
+            </Text>
+        </Area>;
     }
 
     render() {
-        return (
-            <Container>
-                <Header>
-                    <HeaderText>
-                        Chase
-                    </HeaderText>
-                </Header>
-                <Dropzone
-                    accept="text/*"
-                    multiple={false}
-                    onDrop={this.onDrop}
-                >
-                    {this.renderChildren}
-                </Dropzone>
-            </Container>
-        );
+        return <Container>
+            <Dropzone
+                accept="text/*"
+                multiple={false}
+                onDrop={this.onDrop}
+            >
+                {this.renderChildren}
+            </Dropzone>
+        </Container>;
     }
 }
