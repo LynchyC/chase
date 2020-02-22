@@ -1,8 +1,11 @@
 import React from "react";
 
+import View from "../../view";
+
 export default (props) => {
-    return <svg
+    return <View
         {...props}
+        element="svg"
         height="16"
         viewBox="0 0 16 16"
         width="16"
@@ -14,5 +17,5 @@ export default (props) => {
         <path
             d="M12.352 2.273a.927.927 0 011.314 0 .935.935 0 010 1.32L3.587 13.709a.927.927 0 01-1.315 0 .935.935 0 010-1.32l10.08-10.116z"
             fill="#000000" />
-    </svg>;
+    </View>;
 };
