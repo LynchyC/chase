@@ -1,22 +1,21 @@
 module.exports = {
-    presets: [
-        [
-            "@babel/preset-env",
-            {
-                targets: {
-                    electron: "8.0.0"
-                }
-            }
-        ],
-        "@babel/preset-react"
-    ],
+    env: {
+        development: {
+            plugins: [["styled-components", {
+                minify: false
+            }]]
+        },
+        production: {
+            plugins: [["styled-components", {
+                displayName: false
+            }]]
+        }
+    },
     plugins: [
-        [
-            "@babel/plugin-proposal-class-properties",
-            {
-                loose: true
-            }
-        ],
-        "babel-plugin-styled-components"
+        "@babel/proposal-class-properties"
+    ],
+    presets: [
+        "@babel/env",
+        "@babel/react"
     ]
 };
