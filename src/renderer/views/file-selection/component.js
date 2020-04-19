@@ -1,53 +1,48 @@
-import React, { Component } from "react";
-import Dropzone from "react-dropzone";
-import { array, func, shape } from "prop-types";
+import React, { useCallback, useEffect } from "react";
+import { useDropzone } from "react-dropzone";
+import { useHistory } from "react-router-dom";
+import { array, func } from "prop-types";
 
 import { Area, Container, Text } from "./style";
 
-export default class FileSelection extends Component {
+const Component = ({ add, files }) => {
+    const { push } = useHistory();
 
-    static propTypes = {
-        addFile: func.isRequired,
-        files: array.isRequired,
-        history: shape({
-            push: func.isRequired
-        }).isRequired
-    };
-
-    componentDidUpdate() {
-        const { files, history } = this.props;
+    useEffect(() => {
         if (files.length) {
-            history.push("/logs");
+            push("/logs");
         }
-    }
+    }, [files]);
 
-    onDrop = (files = []) => {
+    const onDrop = useCallback((files = []) => {
         if (files.length) {
             const { name, path } = files[0];
-            this.props.addFile(name, path);
+            add(name, path);
         }
-    };
+    }, []);
 
-    renderChildren = ({ getInputProps, getRootProps, isDragActive, isDragReject }) => {
-        return <Area {...getRootProps()}>
+    const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
+        accept: "text/*",
+        multiple: false,
+        onDrop
+    });
+
+    return <Container>
+        <Area {...getRootProps()}>
             <input {...getInputProps()} />
             <Text>
                 {!isDragActive && !isDragReject && "Drop a file here to get started or click me!"}
                 {isDragActive && !isDragReject && "This file is authorized"}
                 {isDragActive && isDragReject && "Sorry, this file is not authorized ..."}
             </Text>
-        </Area>;
-    }
+        </Area>
+    </Container>
+};
 
-    render() {
-        return <Container>
-            <Dropzone
-                accept="text/*"
-                multiple={false}
-                onDrop={this.onDrop}
-            >
-                {this.renderChildren}
-            </Dropzone>
-        </Container>;
-    }
-}
+
+Component.propTypes = {
+    add: func.isRequired,
+    files: array.isRequired
+};
+
+export default Component;

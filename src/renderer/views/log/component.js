@@ -1,132 +1,123 @@
 import { ipcRenderer } from "electron";
-import React, { Component, createRef } from "react";
+import React, { useEffect, useRef } from "react";
+import { useHistory } from "react-router-dom";
 import { array, func, number, shape } from "prop-types";
 
-import { Button, ButtonTray, Container, Label, Text } from "./style";
 import { Tab, Tabs } from "../../components/tabs";
 import IpcManager from "../../ipc-manager";
+import { Button, ButtonTray, Container, Label, Text } from "./style";
 
-export default class LogView extends Component {
+const Component = ({ files, follow, remove, select, selected, setPosition, update }) => {
 
-    selected = createRef();
+    const { push } = useHistory();
+    const tab = useRef();
 
-    static propTypes = {
-        files: array.isRequired,
-        followFile: func.isRequired,
-        history: shape({
-            push: func.isRequired
-        }).isRequired,
-        removeFile: func.isRequired,
-        selected: number.isRequired,
-        selectFile: func.isRequired,
-        setScroll: func.isRequired,
-        updateFile: func.isRequired
-    };
-
-    componentDidMount() {
-        ipcRenderer.on("log:changed", this.handleFileListener);
-        this.setScroll();
-    }
-
-    componentDidUpdate() {
-        const { files, history, selected } = this.props;
-        const { follow, scrollTop } = files[selected] ?? {};
-        if (!files.length) {
-            history.push("/");
-        } else {
-            this.setScroll(follow ? scrollTop : null);
+    useEffect(() => {        
+        const handleFileChange = (event, content) => update(content);
+        ipcRenderer.on("log:changed", handleFileChange);
+        return () => {
+            ipcRenderer.removeListener("log:changed", handleFileChange);
         }
-    }
+    }, []);
 
-    componentWillUnmount() {
-        ipcRenderer.removeListener("log:changed", this.handleFileListener);
-    }
+    useEffect(() => {
+        if (!files.length) {
+            push("/");
+        }
+    }, [files]);
 
-    handleFileListener = (event, fileContent) => {
-        this.props.updateFile(fileContent);
-    };
+    useEffect(() => {
+        const { follow, scrollTop } = files[selected] ?? {};
+        setScroll(follow ? scrollTop : null);
+    }, [selected]);
 
-    getScroll = () => {
-        const { scrollHeight, scrollTop } = this.selected.current;
+    const getScroll = () => {
+        const { scrollHeight, scrollTop } = tab.current;
         return { scrollHeight, scrollTop };
     };
 
-    setScroll = (initial = null) => {
-        const { files, selected } = this.props;
+    const setScroll = (initial = null) => {
         const { follow } = files[selected];
-        const { scrollHeight, scrollTop } = this.getScroll();
-        this.selected.current.scrollTop = follow ? scrollHeight : (initial ?? scrollTop);
+        const { scrollHeight, scrollTop } = getScroll();
+        tab.current.scrollTop = follow ? scrollHeight : (initial ?? scrollTop);
     };
 
-    onChangeFollow = (id) => {
+    const onChangeFollow = (id) => {
         return () => {
-            const { scrollHeight } = this.getScroll();
-            this.props.followFile(id, scrollHeight);
+            const { scrollHeight } = getScroll();
+            follow(id, scrollHeight);
         };
     };
 
-    onClickIcon = (id) => {
+    const onClickIcon = (id) => {
         return (event) => {
             event.stopPropagation();
-            this.props.removeFile(id);
+            remove(id);
         };
     };
 
-    onClickTab = (index) => {
-        return () => {
-            const { files, selected, selectFile, setScroll } = this.props;
-            const { id, follow } = files[selected];
-            if (!follow) {
-                const { scrollTop } = this.getScroll();
-                setScroll(id, scrollTop);
-            }
-            selectFile(index);
-        };
-    };
-
-    onClickOpen = (id) => {
+    const onClickOpen = (id) => {
         return () => {
             IpcManager.openFileInExplorer(id);
         };
     };
 
-    renderFile = ({ content, follow, id, name, path }, index) => {
-        const { selected } = this.props;
+    const onClickTab = (index) => {
+        return () => {
+            const { id, follow } = files[selected];
+            if (!follow) {
+                const { scrollTop } = getScroll();
+                setPosition(id, scrollTop);
+            }
+            select(index);
+        };
+    };
+
+    const renderFile = ({ content, follow, id, name, path }, index) => {
         const active = (selected === index);
         return <Tab
             key={id}
             heading={name}
-            onClickTab={this.onClickTab(index)}
-            onClickIcon={this.onClickIcon(id)}
+            onClickTab={onClickTab(index)}
+            onClickIcon={onClickIcon(id)}
             title={path}
         >
             <Text
                 element="textarea"
                 value={content}
-                ref={active ? this.selected : null}
+                ref={active ? tab : null}
                 readOnly />
             <ButtonTray>
                 <Label>
                     Follow
                     <input
                         type="checkbox"
-                        onChange={this.onChangeFollow(id)}
+                        onChange={onChangeFollow(id)}
                         checked={follow} />
                 </Label>
-                <Button onClick={this.onClickOpen(id)}>
+                <Button onClick={onClickOpen(id)}>
                     Open in Explorer
                 </Button>
             </ButtonTray>
         </Tab>
     };
 
-    render() {
-        const { files, selected } = this.props;
-        return <Container>
-            {files.length > 0 && <Tabs selected={selected}>
-                {files.map(this.renderFile)}
-            </Tabs>}
-        </Container>
-    }
+    return <Container>
+        {files.length > 0 && <Tabs selected={selected}>
+            {files.map(renderFile)}
+        </Tabs>}
+    </Container>;
 
-}
+};
+
+Component.propTypes = {
+    files: array.isRequired,
+    follow: func.isRequired,
+    remove: func.isRequired,
+    selected: number.isRequired,
+    select: func.isRequired,
+    setPosition: func.isRequired,
+    update: func.isRequired
+};
+
+export default Component;

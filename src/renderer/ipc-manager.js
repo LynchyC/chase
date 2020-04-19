@@ -1,6 +1,6 @@
 import { ipcRenderer } from "electron";
 
-import { addFileSuccess, removeFileSuccess } from "./state/file/actions";
+import { addSuccess, removeSuccess } from "./state/file/actions";
 import selectFile from "./views/log/actions";
 
 export default class IpcManager {
@@ -12,12 +12,12 @@ export default class IpcManager {
                 const index = allIds.indexOf(file);
                 dispatch(selectFile(index));
             } else {
-                dispatch(addFileSuccess(file));
+                dispatch(addSuccess(file));
             }
         });
 
         ipcRenderer.on("log:unloaded", (event, deletedId) => {
-            dispatch(removeFileSuccess(deletedId));
+            dispatch(removeSuccess(deletedId));
         });
     }
 
