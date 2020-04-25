@@ -1,39 +1,25 @@
 {
-    "name": "chase",
-    "version": "0.0.1",
-    "description": "Real time logging display built on Electron",
-    "main": "dist/main.js",
-    "scripts": {
-        "build": "npm-run-all build:main build:renderer",
-        "build:main": "webpack --mode production --config webpack.config.electron.js",
-        "build:main-dev": "webpack --mode development --config webpack.config.electron.js",
-        "build:renderer": "webpack --mode production --config webpack.config.renderer.js",
-        "build:test": "webpack --mode none --config webpack.config.test.js",
-        "electron": "electron ./dist/main.js",
-        "jest:e2e": "jest test/e2e",
-        "serve": "webpack-dev-server --mode development --config webpack.config.renderer.js",
-        "start": "npm-run-all build:main-dev electron",
-        "test": "npm-run-all build:test jest:*"
-    },
-    "keywords": [],
     "author": {
         "name": "Charlie Lynch",
         "email": "lynchcoding@gmail.com",
         "url": "https://github.com/LynchyC"
     },
-    "license": "MIT",
-    "jest": {
-        "moduleDirectories": [
-            "node_modules"
-        ],
-        "testRegex": "(/test/.*|(\\.|/)(test|spec))\\.(jsx?)$",
-        "moduleFileExtensions": [
-            "js",
-            "jsx",
-            "json",
-            "node"
-        ]
+    "dependencies": {
+        "electron-log": "^4.1.1",
+        "node-watch": "^0.6.3",
+        "prop-types": "^15.7.2",
+        "react": "^16.13.1",
+        "react-dom": "^16.13.1",
+        "react-dropzone": "^10.2.2",
+        "react-redux": "^7.2.0",
+        "react-router-dom": "^5.1.2",
+        "redux": "^4.0.5",
+        "redux-thunk": "^2.3.0",
+        "reselect": "^4.0.0",
+        "styled-components": "^5.1.0",
+        "uniqid": "^5.2.0"
     },
+    "description": "Real time logging display built on Electron",
     "devDependencies": {
         "@babel/core": "^7.9.0",
         "@babel/plugin-proposal-class-properties": "^7.8.3",
@@ -55,24 +41,39 @@
         "npm-run-all": "^4.1.5",
         "raw-loader": "^4.0.1",
         "spectron": "^10.0.1",
+        "ts-loader": "^7.0.1",
+        "typescript": "^3.8.3",
         "webpack": "^4.42.1",
         "webpack-cli": "^3.3.11",
         "webpack-dev-server": "^3.10.3",
         "webpack-merge": "^4.2.2"
     },
-    "dependencies": {
-        "electron-log": "^4.1.1",
-        "node-watch": "^0.6.3",
-        "prop-types": "^15.7.2",
-        "react": "^16.13.1",
-        "react-dom": "^16.13.1",
-        "react-dropzone": "^10.2.2",
-        "react-redux": "^7.2.0",
-        "react-router-dom": "^5.1.2",
-        "redux": "^4.0.5",
-        "redux-thunk": "^2.3.0",
-        "reselect": "^4.0.0",
-        "styled-components": "^5.1.0",
-        "uniqid": "^5.2.0"
-    }
+    "name": "chase",
+    "license": "MIT",
+    "main": "dist/main.js",
+    "jest": {
+        "moduleDirectories": [
+            "node_modules"
+        ],
+        "moduleFileExtensions": [
+            "js",
+            "jsx",
+            "json",
+            "node"
+        ],
+        "testRegex": "(/test/.*|(\\.|/)(test|spec))\\.(jsx?)$"
+    },
+    "scripts": {
+        "build": "npm-run-all build:main build:renderer",
+        "build:main": "webpack --mode production --config webpack.config.electron.js",
+        "build:main-dev": "webpack --mode development --config webpack.config.electron.js",
+        "build:renderer": "webpack --mode production --config webpack.config.renderer.js",
+        "build:test": "webpack --mode none --config webpack.config.test.js",
+        "electron": "electron ./dist/main.js",
+        "jest:e2e": "jest test/e2e",
+        "serve": "webpack-dev-server --mode development --config webpack.config.renderer.js",
+        "start": "npm-run-all build:main-dev electron",
+        "test": "npm-run-all build:test jest:*"
+    },
+    "version": "0.0.1"
 }
