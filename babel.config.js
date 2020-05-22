@@ -15,7 +15,7 @@ module.exports = {
         "@babel/proposal-class-properties"
     ],
     presets: [
-        "@babel/env",
+        ["@babel/env", { targets: "last 3 chrome versions" }],
         "@babel/react"
     ]
 };
