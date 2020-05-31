@@ -11,11 +11,11 @@ module.exports = {
             }]]
         }
     },
-    plugins: [
-        "@babel/proposal-class-properties"
-    ],
     presets: [
-        ["@babel/env", { targets: "last 3 chrome versions" }],
+        ["@babel/env", {
+            shippedProposals: true,
+            targets: "last 3 chrome versions"
+        }],
         "@babel/react"
     ]
 };

@@ -35,10 +35,9 @@
         ]
     },
     "devDependencies": {
-        "@babel/core": "^7.9.6",
-        "@babel/plugin-proposal-class-properties": "^7.8.3",
-        "@babel/preset-env": "^7.9.6",
-        "@babel/preset-react": "^7.9.4",
+        "@babel/core": "^7.10.2",
+        "@babel/preset-env": "^7.10.2",
+        "@babel/preset-react": "^7.10.1",
         "@types/jest": "^25.2.3",
         "@types/react": "^16.9.35",
         "@types/react-dom": "^16.9.8",
@@ -72,7 +71,7 @@
         "redux": "^4.0.5",
         "redux-thunk": "^2.3.0",
         "reselect": "^4.0.0",
-        "styled-components": "^5.1.0",
+        "styled-components": "^5.1.1",
         "uniqid": "^5.2.0"
     }
 }
