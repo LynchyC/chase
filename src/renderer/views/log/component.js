@@ -1,7 +1,7 @@
 import { ipcRenderer } from "electron";
 import React, { useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
-import { array, func, number, shape } from "prop-types";
+import { array, func, number } from "prop-types";
 
 import { Tab, Tabs } from "../../components/tabs";
 import IpcManager from "../../ipc-manager";
