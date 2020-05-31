@@ -1,6 +1,6 @@
 import { watch } from "chokidar";
 import { readFile } from "fs";
-import uniqid from "uniqid";
+import { nanoid } from "nanoid";
 import { promisify } from "util";
 import log from "electron-log";
 
@@ -35,7 +35,7 @@ class Watcher {
                 this.#window.webContents.send("file:watching", id)
             } else {
                 const file = {
-                    id: uniqid(),
+                    id: nanoid(),
                     name,
                     path,
                     content: await this.#getFileContent(path)
