@@ -28,7 +28,7 @@ class Watcher {
     }
 
     async add(name = "", path = "") {
-        try {            
+        try {
             const { id } = this._getByPath(path);
             if (id) {
                 this._mainWindow.webContents.send("file:watching", id)
@@ -56,7 +56,7 @@ class Watcher {
     }
 
     async update(path) {
-        try {            
+        try {
             const { id } = this._getByPath(path);
             this._files[id].content = await this._getFileContent(path);
             this._mainWindow.webContents.send("log:changed", this._files[id]);
@@ -66,7 +66,7 @@ class Watcher {
     }
 
     remove(path) {
-        try {            
+        try {
             const { id } = this._getByPath(path);
             this._watcher.unwatch(path);
             delete this._files[id];
@@ -76,10 +76,11 @@ class Watcher {
         }
     }
 
-    end() {
-        this._watcher.close().then(() => {
+    async end() {
+        if (this._watcher) {
+            await this._watcher.close();
             this._watcher = null;
-        });
+        }
         this._files = {};
     }
 }
