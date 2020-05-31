@@ -7,48 +7,49 @@ import log from "electron-log";
 const promisifyReadFile = promisify(readFile);
 
 class Watcher {
-    _watcher = null;
-    _files = {};
+    #files = {};
+    #watcher = null;
+    #window = null;
 
-    _getByPath(path) {
-        return Object.values(this._files)
+    #getByPath(path) {
+        return Object.values(this.#files)
             .find(file => file.path === path) || {};
     }
 
-    async _getFileContent(path) {
+    async #getFileContent(path) {
         return promisifyReadFile(path, "utf-8");
     }
 
-    initialize(mainWindow) {
-        this._mainWindow = mainWindow;
+    initialize(window) {
+        this.#window = window;
     }
 
     getFile(id) {
-        return this._files[id];
+        return this.#files[id];
     }
 
     async add(name = "", path = "") {
         try {
-            const { id } = this._getByPath(path);
+            const { id } = this.#getByPath(path);
             if (id) {
-                this._mainWindow.webContents.send("file:watching", id)
+                this.#window.webContents.send("file:watching", id)
             } else {
                 const file = {
                     id: uniqid(),
                     name,
                     path,
-                    content: await this._getFileContent(path)
+                    content: await this.#getFileContent(path)
                 };
-                if (!this._watcher) {
-                    this._watcher = watch(path)
+                if (!this.#watcher) {
+                    this.#watcher = watch(path)
                         .on("change", this.update.bind(this))
                         .on("unlink", this.remove.bind(this))
                         .on("error", (error) => log.error(error));
                 } else {
-                    this._watcher.add(path);
+                    this.#watcher.add(path);
                 }
-                this._files[file.id] = file;
-                this._mainWindow.webContents.send("file:watching", file);
+                this.#files[file.id] = file;
+                this.#window.webContents.send("file:watching", file);
             }
         } catch (error) {
             log.error(error);
@@ -57,9 +58,9 @@ class Watcher {
 
     async update(path) {
         try {
-            const { id } = this._getByPath(path);
-            this._files[id].content = await this._getFileContent(path);
-            this._mainWindow.webContents.send("log:changed", this._files[id]);
+            const { id } = this.#getByPath(path);
+            this.#files[id].content = await this.#getFileContent(path);
+            this.#window.webContents.send("log:changed", this.#files[id]);
         } catch (error) {
             log.error(error);
         }
@@ -67,21 +68,22 @@ class Watcher {
 
     remove(path) {
         try {
-            const { id } = this._getByPath(path);
-            this._watcher.unwatch(path);
-            delete this._files[id];
-            this._mainWindow.webContents.send("log:unloaded", id);
+            const { id } = this.#getByPath(path);
+            this.#watcher.unwatch(path);
+            delete this.#files[id];
+            this.#window.webContents.send("log:unloaded", id);
         } catch (error) {
             log.error(error);
         }
     }
 
     async end() {
-        if (this._watcher) {
-            await this._watcher.close();
-            this._watcher = null;
+        this.#files = {};
+        if (this.#watcher) {
+            await this.#watcher.close();
+            this.#watcher = null;
         }
-        this._files = {};
+        this.#window = null;
     }
 }
 
