@@ -6,8 +6,8 @@ const add = (e, name, path) => {
     watcher.add(name, path);
 };
 
-const remove = (e, id) => {
-    watcher.remove(id);
+const remove = (e, path) => {
+    watcher.remove(path);
 };
 
 const openInExplorer = (e, id) => {

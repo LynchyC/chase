@@ -1,5 +1,5 @@
+import { watch } from "chokidar";
 import { readFile } from "fs";
-import watch from "node-watch";
 import uniqid from "uniqid";
 import { promisify } from "util";
 import log from "electron-log";
@@ -10,20 +10,6 @@ class Watcher {
     _watcher = null;
     _files = {};
 
-    _eventHandler = (event, path) => {
-        const { id } = this._getByPath(path);
-        switch (event) {
-            case "update":
-                this.update(id, path);
-                break;
-            case "remove":
-                this.remove(id);
-                break;
-            default:
-                throw new Error(`Unknown event '${event}' has occurred.`);
-        }
-    };
-
     _getByPath(path) {
         return Object.values(this._files)
             .find(file => file.path === path) || {};
@@ -31,25 +17,6 @@ class Watcher {
 
     async _getFileContent(path) {
         return promisifyReadFile(path, "utf-8");
-    }
-
-    _getPaths() {
-        return Object.values(this._files).map(({ path }) => path);
-    }
-
-    _set(paths = [], removing = false) {
-        try {
-            if (this._watcher) {
-                this._watcher.close();
-            }
-            this._watcher = paths.length ? watch(paths, {}, this._eventHandler) : null;
-        } catch ({ message }) {
-            const index = message.indexOf("does not exist");
-            if (index > -1 && removing) {
-                const path = message.substring(0, index);
-                this._set(paths.filter((p) => p !== path), true);
-            }
-        }
     }
 
     initialize(mainWindow) {
@@ -61,25 +28,36 @@ class Watcher {
     }
 
     async add(name = "", path = "") {
-        const { id } = this._getByPath(path);
-        if (id) {
-            this._mainWindow.webContents.send("file:watching", id)
-        } else {
-            const paths = this._getPaths();
-            const file = {
-                id: uniqid(),
-                name,
-                path,
-                content: await this._getFileContent(path)
-            };
-            this._set([...paths, path]);
-            this._files[file.id] = file;
-            this._mainWindow.webContents.send("file:watching", file);
+        try {            
+            const { id } = this._getByPath(path);
+            if (id) {
+                this._mainWindow.webContents.send("file:watching", id)
+            } else {
+                const file = {
+                    id: uniqid(),
+                    name,
+                    path,
+                    content: await this._getFileContent(path)
+                };
+                if (!this._watcher) {
+                    this._watcher = watch(path)
+                        .on("change", this.update.bind(this))
+                        .on("unlink", this.remove.bind(this))
+                        .on("error", (error) => log.error(error));
+                } else {
+                    this._watcher.add(path);
+                }
+                this._files[file.id] = file;
+                this._mainWindow.webContents.send("file:watching", file);
+            }
+        } catch (error) {
+            log.error(error);
         }
     }
 
-    async update(id, path) {
-        try {
+    async update(path) {
+        try {            
+            const { id } = this._getByPath(path);
             this._files[id].content = await this._getFileContent(path);
             this._mainWindow.webContents.send("log:changed", this._files[id]);
         } catch (error) {
@@ -87,16 +65,21 @@ class Watcher {
         }
     }
 
-    remove(id) {
-        const { path } = this.getFile(id);
-        const paths = [...this._getPaths()].filter(p => p !== path);
-        this._set(paths, true);
-        delete this._files[id];
-        this._mainWindow.webContents.send("log:unloaded", id);
+    remove(path) {
+        try {            
+            const { id } = this._getByPath(path);
+            this._watcher.unwatch(path);
+            delete this._files[id];
+            this._mainWindow.webContents.send("log:unloaded", id);
+        } catch (error) {
+            log.error(error);
+        }
     }
 
     end() {
-        this._watcher = null;
+        this._watcher.close().then(() => {
+            this._watcher = null;
+        });
         this._files = {};
     }
 }

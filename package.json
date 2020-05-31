@@ -61,8 +61,8 @@
         "webpack-merge": "^4.2.2"
     },
     "dependencies": {
+        "chokidar": "^3.4.0",
         "electron-log": "^4.2.0",
-        "node-watch": "^0.6.4",
         "prop-types": "^15.7.2",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
