@@ -9,8 +9,8 @@ export const addSuccess = (file) => ({ type: ADD_FILE, file });
 
 export const follow = (id, scrollTop = null) => ({ type: FOLLOW_FILE, id, scrollTop });
 
-export const remove = (id) => () => {
-    ipcRenderer.send("file:removed", id);
+export const remove = (path) => () => {
+    ipcRenderer.send("file:removed", path);
 };
 
 export const removeSuccess = (id) => ({ type: REMOVE_FILE, id });

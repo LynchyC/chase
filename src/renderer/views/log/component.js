@@ -12,7 +12,7 @@ const Component = ({ files, follow, remove, select, selected, setPosition, updat
     const { push } = useHistory();
     const tab = useRef();
 
-    useEffect(() => {        
+    useEffect(() => {
         const handleFileChange = (event, content) => update(content);
         ipcRenderer.on("log:changed", handleFileChange);
         return () => {
@@ -23,13 +23,11 @@ const Component = ({ files, follow, remove, select, selected, setPosition, updat
     useEffect(() => {
         if (!files.length) {
             push("/");
+        } else {
+            const { follow, scrollTop } = files[selected] ?? {};
+            setScroll(follow ? scrollTop : null);
         }
-    }, [files]);
-
-    useEffect(() => {
-        const { follow, scrollTop } = files[selected] ?? {};
-        setScroll(follow ? scrollTop : null);
-    }, [selected]);
+    }, [files, selected, files[selected]?.content]);
 
     const getScroll = () => {
         const { scrollHeight, scrollTop } = tab.current;
@@ -49,17 +47,15 @@ const Component = ({ files, follow, remove, select, selected, setPosition, updat
         };
     };
 
-    const onClickIcon = (id) => {
+    const onClickIcon = (path) => {
         return (event) => {
             event.stopPropagation();
-            remove(id);
+            remove(path);
         };
     };
 
     const onClickOpen = (id) => {
-        return () => {
-            IpcManager.openFileInExplorer(id);
-        };
+        return () => IpcManager.openFileInExplorer(id);
     };
 
     const onClickTab = (index) => {
@@ -79,7 +75,7 @@ const Component = ({ files, follow, remove, select, selected, setPosition, updat
             key={id}
             heading={name}
             onClickTab={onClickTab(index)}
-            onClickIcon={onClickIcon(id)}
+            onClickIcon={onClickIcon(path)}
             title={path}
         >
             <Text
@@ -103,7 +99,7 @@ const Component = ({ files, follow, remove, select, selected, setPosition, updat
     };
 
     return <Container>
-        {files.length > 0 && <Tabs selected={selected}>
+        {!!files.length && <Tabs selected={selected}>
             {files.map(renderFile)}
         </Tabs>}
     </Container>;
