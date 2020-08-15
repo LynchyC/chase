@@ -14,7 +14,7 @@ module.exports = {
     presets: [
         ["@babel/env", {
             shippedProposals: true,
-            targets: "last 3 chrome versions"
+            targets: "chrome 79"
         }],
         "@babel/react"
     ]
